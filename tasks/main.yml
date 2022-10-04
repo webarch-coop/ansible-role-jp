@@ -116,7 +116,7 @@
 
           when: (jp_which_jp.rc == 1) or (jp_installed_version is not defined) or (jp_installed_version is version(jp_version_latest, '<'))
 
-      when: ansible_distribution_release == "bookworm"
+      when: ansible_distribution_release != "bookworm"
 
   when: jp | bool
   tags:
