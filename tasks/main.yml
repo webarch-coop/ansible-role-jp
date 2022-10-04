@@ -97,7 +97,7 @@
 
             - name: Set a fact for the checksum
               ansible.builtin.set_fact:
-                jp_checksum: "{{ jp_line.split(' ')[0] }}"
+                jp_checksum: "sha256:{{ jp_line.split(' ')[0] }}"
               when: jp_binary in jp_line
               loop: "{{ (jp_checksums_b64encoded['content'] | b64decode ).split('\n') }}"
               loop_control:
@@ -106,6 +106,7 @@
             - name: Jp binary present
               ansible.builtin.get_url:
                 url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/{{ jp_binary }}"
+                checksum: "{{ jp_checksum }}"
                 dest: "/root/{{ jp_binary }}"
                 mode: 0644
               register: jp_download
