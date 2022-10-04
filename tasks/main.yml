@@ -74,7 +74,7 @@
                 group: root
 
             - name: GPG key imported
-              ansible.builtin.command: gpg --import A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
+              ansible.builtin.command: gpg --import /root/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
               register: jp_gpg_import
               changed_when: ("not changed" not in jp_gpg_import.stderr)
 
