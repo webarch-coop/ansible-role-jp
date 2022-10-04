@@ -1,0 +1,124 @@
+---
+- name: Install or upgrade jp
+  block:
+
+    - name: Jp present via deb package
+      ansible.builtin.apt:
+        pkg:
+          - jp
+        state: present
+      when: ansible_distribution_release == "bookworm"
+
+    - name: Jp present using GitHub binary
+      block:
+
+        - name: Check if jp is installed
+          ansible.builtin.command: which jp
+          check_mode: false
+          changed_when: false
+          register: jp_which_jp
+          failed_when: jp_which_jp.rc is not regex('^0|1$')
+
+        - name: Check the insalled version of jp
+          block:
+
+            - name: Check the jp version
+              ansible.builtin.command: jp -v
+              check_mode: false
+              changed_when: false
+              register: jp_help
+
+            - name: Set a fact for the installed version of jp
+              ansible.builtin.set_fact:
+                jp_installed_version: "{{ jp_help.stdout_lines[0].split(' ')[2] }}"
+
+          when: jp_which_jp.rc == 0
+
+        - name: Check the latest version of jp
+          ansible.builtin.uri:
+            url: https://github.com/jmespath/jp/releases/latest
+            method: HEAD
+            status_code: 302
+            follow_redirects: none
+          check_mode: false
+          changed_when: false
+          register: jp_headers
+
+        - name: Debug jp latest headers
+          ansible.builtin.debug:
+            msg:
+              - "Location: {{ jp_headers.location }}"
+              - "Path: {{ jp_headers.location | urlsplit('path') }}"
+              - "Version: {{ jp_headers.location | urlsplit('path') | basename }}"
+            verbosity: 2
+
+        - name: Set a fact for the latest version of jp
+          ansible.builtin.set_fact:
+            jp_version_latest: "{{ jp_headers.location | urlsplit('path') | basename }}"
+
+        - name: Install or upgrade jp
+          block:
+
+            - name: GPG present
+              ansible.builtin.apt:
+                pkg:
+                  - gpg
+                state: present
+
+            - name: GPG public key present
+              ansible.builtin.copy:
+                src: A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
+                dest: /root/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
+                mode: 0600
+                owner: root
+                group: root
+
+            - name: GPG key imported
+              ansible.builtin.command: gpg --import A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
+              register: jp_gpg_import
+              changed_when: ("not changed" not in jp_gpg_import.stderr)
+
+            - name: Checksums present
+              ansible.builtin.get_url:
+                url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/jp-checksums.sha256.asc"
+                dest: /root/jp-checksums.sha256.asc
+                mode: 0644
+
+            - name: Checksums verified
+              ansible.builtin.command: gpg --verify /root/jp-checksums.sha256.asc
+              check_mode: false
+              changed_when: false
+              register: jp_gpg_verify
+
+            - name: Slurp the checksums
+              ansible.builtin.slurp:
+                src: /root/jp-checksums.sha256.asc 
+              register: jp_checksums_b64encoded
+
+            - name: Set a fact for the checksum
+              ansible.builtin.set_fact:
+                jp_checksum: "{{ jp_line.split(' ')[0] }}"
+              when: jp_binary in jp_line
+              loop: "{{ (jp_checksums_b64encoded['content'] | b64decode ).split('\n') }}"
+              loop_control:
+                loop_var: jp_line
+
+            - name: Jp binary present
+              ansible.builtin.get_url:
+                url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/{{ jp_binary }}"
+                dest: "/root/{{ jp_binary }}"
+                mode: 0644
+              register: jp_download
+
+             - name: Debug jp download
+               ansible.builtin.debug:
+                 var: jp_download
+
+          when: (jp_which_jp.rc == 1) or (jp_installed_version is not defined) or (jp_installed_version is version(jp_version_latest, '<'))
+
+      when: ansible_distribution_release == "bookworm"
+
+  when: jp | bool
+  tags:
+    - jp
+...

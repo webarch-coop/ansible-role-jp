@@ -1,0 +1,14 @@
+---
+argument_specs:
+  main:
+    short_description: The main entry point for the jp role.
+    options:
+      jp:
+        type: bool
+        required: true
+        description: Run the tasks in this role
+      jc_version:
+        type: str
+        required: true
+        description: The jp version number or latest
+...

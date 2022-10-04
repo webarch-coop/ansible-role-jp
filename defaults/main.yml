@@ -1,0 +1,5 @@
+---
+jp: true
+# https://github.com/jmespath/jp/releases/latest
+jp_binary: jp-linux-amd64
+...
