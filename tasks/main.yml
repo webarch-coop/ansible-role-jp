@@ -121,6 +121,7 @@
             - name: Jp in place
               ansible.builtin.copy:
                 src: "/root/{{ jp_binary }}"
+                remote_src: true
                 dest: /usr/local/bin/jp
                 mode: 0755
 
