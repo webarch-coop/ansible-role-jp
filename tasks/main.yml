@@ -108,12 +108,15 @@
                 url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/{{ jp_binary }}"
                 checksum: "{{ jp_checksum }}"
                 dest: "/root/{{ jp_binary }}"
-                mode: 0644
+                mode: 0755
               register: jp_download
 
-            - name: Debug jp download
-              ansible.builtin.debug:
-                var: jp_download
+            - name: Jp in place
+              ansible.builtin.copy:
+                src: "/root/{{ jp_binary }}"
+                dest: /usr/local/bin/jp
+                mode: 0755
+                validate: %s -v
 
           when: (jp_which_jp.rc == 1) or (jp_installed_version is not defined) or (jp_installed_version is version(jp_version_latest, '<'))
 
