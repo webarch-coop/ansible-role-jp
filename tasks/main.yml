@@ -111,12 +111,18 @@
                 mode: 0755
               register: jp_download
 
+            - name: Check that jp runs
+              ansible.builtin.command: "./{{ jp_binary }} -h" 
+              args:
+                chdir: /root
+              check_mode: false
+              changed_when: false
+
             - name: Jp in place
               ansible.builtin.copy:
                 src: "/root/{{ jp_binary }}"
                 dest: /usr/local/bin/jp
                 mode: 0755
-                validate: %s -v
 
           when: (jp_which_jp.rc == 1) or (jp_installed_version is not defined) or (jp_installed_version is version(jp_version_latest, '<'))
 
