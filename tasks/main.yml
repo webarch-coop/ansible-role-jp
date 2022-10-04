@@ -92,7 +92,7 @@
 
             - name: Slurp the checksums
               ansible.builtin.slurp:
-                src: /root/jp-checksums.sha256.asc 
+                src: /root/jp-checksums.sha256.asc
               register: jp_checksums_b64encoded
 
             - name: Set a fact for the checksum
@@ -110,9 +110,9 @@
                 mode: 0644
               register: jp_download
 
-             - name: Debug jp download
-               ansible.builtin.debug:
-                 var: jp_download
+            - name: Debug jp download
+              ansible.builtin.debug:
+                var: jp_download
 
           when: (jp_which_jp.rc == 1) or (jp_installed_version is not defined) or (jp_installed_version is version(jp_version_latest, '<'))
 
