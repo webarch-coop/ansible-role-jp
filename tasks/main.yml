@@ -112,7 +112,7 @@
               register: jp_download
 
             - name: Check that jp runs
-              ansible.builtin.command: "./{{ jp_binary }} -h" 
+              ansible.builtin.command: "./{{ jp_binary }} -h"
               args:
                 chdir: /root
               check_mode: false
