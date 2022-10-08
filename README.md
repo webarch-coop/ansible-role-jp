@@ -7,7 +7,7 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 ## Defaults
 
 | Variable name        | Default value    | Comment                                                                              |
-+----------------------+------------------+--------------------------------------------------------------------------------------+
+|----------------------|------------------|--------------------------------------------------------------------------------------|
 | `jp`                 | `True`           | Tasks in this role are only run when this is `True`                                  |
 | `jp_binary`          | `jp-linux-amd64` | The name of the binary from [GitHub](https://github.com/jmespath/jp/releases/latest) |
 
