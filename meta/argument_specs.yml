@@ -7,8 +7,13 @@ argument_specs:
         type: bool
         required: true
         description: Run the tasks in this role
-      jc_version:
+      jp_binary:
         type: str
         required: true
-        description: The jp version number or latest
+        description: The jp binary version from GitHub
+        choices:
+          - jp-linux-386
+          - jp-linux-amd64
+          - jp-linux-arm-arm7
+          - jp-linux-arm64
 ...
