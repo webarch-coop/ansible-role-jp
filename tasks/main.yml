@@ -2,14 +2,23 @@
 - name: Install or upgrade jp
   block:
 
-    - name: Jp present via deb package
-      ansible.builtin.apt:
-        pkg:
-          - jp
-        state: present
+    - name: Jp present via deb package when available
+      block:
+
+        - name: Jp deb package present
+          ansible.builtin.apt:
+            pkg:
+              - jp
+            state: present
+
+        - name: Jp GitHub binary package absent
+          ansible.builtin.file:
+            path: /usr/local/bin/jp
+            state: absent
+
       when: ansible_distribution_release == "bookworm"
 
-    - name: Jp present using GitHub binary
+    - name: Jp GitHub binary present
       block:
 
         - name: Check if jp is installed
