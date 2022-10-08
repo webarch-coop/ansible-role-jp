@@ -2,7 +2,7 @@
 
 [![pipeline status](https://git.coop/webarch/jp/badges/main/pipeline.svg)](https://git.coop/webarch/jp/-/commits/main)
 
-An Ansible role to install the latest version of [jp](https://github.com/jmespath/jp) from [GitHub](https://github.com/jmespath/jp/releases/latest) when the Debian distro is not [bookworm](https://packages.debian.org/bookworm/jp), for bookworm the `.deb` package is installed and the GitHub version is removed.
+An Ansible role to install the latest version of [jp](https://github.com/jmespath/jp) from [GitHub](https://github.com/jmespath/jp/releases/latest) when the Debian distro is not Bookworm, [for bookworm the `.deb` package](https://packages.debian.org/bookworm/jp) is installed and the GitHub version is removed.
 
 ## Defaults
 
