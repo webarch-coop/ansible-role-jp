@@ -16,4 +16,8 @@ argument_specs:
           - jp-linux-amd64
           - jp-linux-arm-arm7
           - jp-linux-arm64
+      jp_term:
+        type: bool
+        required: false
+        description: Install or remove JMESPath Terminal, jpterm
 ...

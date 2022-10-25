@@ -138,6 +138,10 @@
 
       when: ansible_distribution_release != "bookworm"
 
+    - name: Include JMESPath Terminal tasks
+      ansible.builtin.include_tasks: jpterm.yml
+      when: jp_term is defined
+
   when: jp | bool
   tags:
     - jp

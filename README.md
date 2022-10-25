@@ -10,6 +10,11 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 |----------------------|------------------|--------------------------------------------------------------------------------------|
 | `jp`                 | `True`           | Tasks in this role are only run when this is `True`                                  |
 | `jp_binary`          | `jp-linux-amd64` | The name of the binary from [GitHub](https://github.com/jmespath/jp/releases/latest) |
+| `jp_term`            | `False`          | Install or remove [JMESPath Terminal](https://pypi.org/project/jmespath-terminal/)   |
+
+## JMESPath Terminal
+
+This role doesn't install `jpterm` by default since it currently [depends on an old version of `setuptools`](https://github.com/jmespath/jmespath.terminal/issues/19#issuecomment-1156039074).
 
 ## Repo
  
