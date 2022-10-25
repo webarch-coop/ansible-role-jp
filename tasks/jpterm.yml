@@ -4,12 +4,12 @@
 
     # https://github.com/jmespath/jmespath.terminal/issues/19#issuecomment-1156039074
     - name: Use pip to install an old version of setuptools
-      ansible.buuiltin.pip:
+      ansible.bulitin.pip:
         name: setuptools==57
         state: present
 
     - name: Use pip to install jpterm
-      ansible.buuiltin.pip:
+      ansible.bulitin.pip:
         name: jmespath-terminal
         state: present
 
@@ -21,12 +21,12 @@
   block:
 
     - name: Use pip to uninstall jpterm
-      ansible.buuiltin.pip:
+      ansible.bulitin.pip:
         name: jmespath-terminal
         state: absent
 
     - name: Use pip to uninstall an old version of setuptools
-      ansible.buuiltin.pip:
+      ansible.bulitin.pip:
         name: setuptools==57
         state: absent
 
