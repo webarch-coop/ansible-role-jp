@@ -9,6 +9,7 @@
           ansible.builtin.apt:
             pkg:
               - jp
+            update_cache: true
             state: present
 
         - name: Jp GitHub binary package absent
