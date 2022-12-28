@@ -2,24 +2,24 @@
 - name: Install or upgrade jp
   block:
 
-    - name: Jp present via deb package when available
+    - name: Debian package present when available
       block:
 
-        - name: Jp deb package present
+        - name: Package present
           ansible.builtin.apt:
             pkg:
               - jp
             update_cache: true
             state: present
 
-        - name: Jp GitHub binary package absent
+        - name: GitHub binary absent
           ansible.builtin.file:
             path: /usr/local/bin/jp
             state: absent
 
       when: ansible_distribution_release == "bookworm"
 
-    - name: Jp GitHub binary present
+    - name: GitHub binary present
       block:
 
         - name: Check if jp is installed
@@ -36,11 +36,11 @@
               ansible.builtin.command: jp -v
               check_mode: false
               changed_when: false
-              register: jp_help
+              register: jp_version
 
             - name: Set a fact for the installed version of jp
               ansible.builtin.set_fact:
-                jp_installed_version: "{{ jp_help.stdout_lines[0].split(' ')[2] }}"
+                jp_installed_version: "{{ jp_version.stdout_lines[0].split(' ')[2] }}"
 
           when: jp_which_jp.rc == 0
 
@@ -113,7 +113,7 @@
               loop_control:
                 loop_var: jp_line
 
-            - name: Jp binary present
+            - name: Binary present
               ansible.builtin.get_url:
                 url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/{{ jp_binary }}"
                 checksum: "{{ jp_checksum }}"
@@ -128,7 +128,7 @@
               check_mode: false
               changed_when: false
 
-            - name: Jp in place
+            - name: Binary in place
               ansible.builtin.copy:
                 src: "/root/{{ jp_binary }}"
                 remote_src: true
