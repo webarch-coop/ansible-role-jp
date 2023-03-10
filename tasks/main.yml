@@ -2,7 +2,7 @@
 - name: Install or upgrade jp
   block:
 
-    - name: Debian package present when available
+    - name: Debian package present when available and role is run as root
       block:
 
         - name: Package present
@@ -17,9 +17,11 @@
             path: /usr/local/bin/jp
             state: absent
 
-      when: ansible_distribution_release == "bookworm"
+      when:
+        - ansible_effective_user_id == 0
+        - ansible_distribution_release == "bookworm"
 
-    - name: GitHub binary present
+    - name: GitHub binary present when not running Debian bookworm and the role is running as root
       block:
 
         - name: Check if jp is installed
@@ -137,11 +139,21 @@
 
           when: (jp_which_jp.rc == 1) or (jp_installed_version is not defined) or (jp_installed_version is version(jp_version_latest, '<'))
 
-      when: ansible_distribution_release != "bookworm"
+      when:
+        - ansible_effective_user_id == 0
+        - ansible_distribution_release != "bookworm"
 
-    - name: Include JMESPath Terminal tasks
+    - name: Include JMESPath Terminal tasks for Debian Bullseye
       ansible.builtin.include_tasks: jpterm.yml
-      when: jp_term is defined
+      when:
+        - jp_term is defined
+        - ansible_distribution_release == "bullseye"
+
+    - name: Include JMESPath Terminal Community Edition tasks for Debian Bookworm
+      ansible.builtin.include_tasks: jpterm_community.yml
+      when:
+        - jp_term is defined
+        - ansible_distribution_release == "bookworm"
 
   when: jp | bool
   tags:

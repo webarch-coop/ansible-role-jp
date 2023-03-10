@@ -1,0 +1,149 @@
+---
+- name: JMESPath Terminal Community Edition
+  block:
+
+    - name: Check that jp_term_community_version is defined
+      ansible.builtin.assert:
+        that:
+          - jp_term_community_version is defined
+          - jp_term_community_version is ansible.builtin.version('0.1.0', '>=')
+        quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
+
+    - name: Requirements present when root
+      ansible.builtin.apt:
+        pkg:
+          - pipx
+          - python3-pip
+        state: present
+      when: ansible_effective_user_id == 0
+
+    - name: Check requirements when not root
+      block:
+
+        - name: Read package facts
+          ansible.builtin.package_facts:
+            manager: apt
+
+        - name: Check the presence of the required packages
+          ansible.builtin.assert:
+            that:
+              - ( "pipx" in ansible_facts.packages.keys() )
+              - ( "python3-pip" in ansible_facts.packages.keys() )
+            fail_msg:
+              - "The pipx packages is required"
+              - "You can install the requirements using:"
+              - "sudo apt install pipx python3-pip"
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+      when: ansible_effective_user_id != 0
+
+    - name: Check the system PyPI packages
+      ansible.builtin.command: python3 -m pip list --format=json
+      check_mode: false
+      changed_when: false
+      register: jp_pip_system_list
+
+    - name: Set a fact for the system PyPI packages present
+      ansible.builtin.set_fact:
+        jp_pip_system_existing: "{{ jp_pip_system_list.stdout | ansible.builtin.from_json }}"
+
+    - name: Debug system PyPI packages present
+      ansible.builtin.debug:
+        var: jp_pip_system_existing
+        verbosity: 2
+
+    - name: Please manually remove the pip installed jmespath-terminal system package
+      ansible.builtin.fail:
+        msg: "sudo pip uninstall {{ jp_pypi_pkg }} --break-system-packages"
+      vars:
+        jp_pypi_pkg: jmespath-terminal
+      when:
+        - jp_pip_system_existing != []
+        - jp_pip_system_existing | community.general.json_query(jp_pypi_jmespath_query) is defined
+        - jp_pip_system_existing | community.general.json_query(jp_pypi_jmespath_query) != []
+        - jp_pip_system_existing | community.general.json_query(jp_pypi_version_jmespath_query) is ansible.builtin.version('0.0.1', '>')
+
+    - name: Please manually remove the pip installed setuptools system package
+      ansible.builtin.fail:
+        msg: "sudo pip uninstall {{ jp_pypi_pkg }} --break-system-packages"
+      vars:
+        jp_pypi_pkg: setuptools
+      when:
+        - jp_pip_system_existing != []
+        - jp_pip_system_existing | community.general.json_query(jp_pypi_jmespath_query) is defined
+        - jp_pip_system_existing | community.general.json_query(jp_pypi_jmespath_query) != []
+        - jp_pip_system_existing | community.general.json_query(jp_pypi_version_jmespath_query) == "57.0.0"
+
+    - name: Check the user PyPI packages
+      ansible.builtin.command: python3 -m pip list --user --format=json
+      check_mode: false
+      changed_when: false
+      register: jp_pip_user_list
+
+    - name: Set a fact for the user PyPI packages present
+      ansible.builtin.set_fact:
+        jp_pip_user_existing: "{{ jp_pip_user_list.stdout | ansible.builtin.from_json }}"
+
+    - name: Debug user PyPI packages present
+      ansible.builtin.debug:
+        var: jp_pip_user_existing
+        verbosity: 2
+
+    - name: Please manually remove the pip installed jmespath-terminal user package
+      ansible.builtin.fail:
+        msg: "sudo pip uninstall {{ jp_pypi_pkg }} --break-system-packages"
+      vars:
+        jp_pypi_pkg: jmespath-terminal
+      when:
+        - jp_pip_user_existing != []
+        - jp_pip_user_existing | community.general.json_query(jp_pypi_jmespath_query) is defined
+        - jp_pip_user_existing | community.general.json_query(jp_pypi_jmespath_query) != []
+        - jp_pip_user_existing | community.general.json_query(jp_pypi_version_jmespath_query) is ansible.builtin.version('0.0.1', '>')
+
+    - name: Please manually remove the pip installed setuptools user package
+      ansible.builtin.fail:
+        msg: "sudo pip uninstall {{ jp_pypi_pkg }} --break-system-packages"
+      vars:
+        jp_pypi_pkg: setuptools
+      when:
+        - jp_pip_user_existing != []
+        - jp_pip_user_existing | community.general.json_query(jp_pypi_jmespath_query) is defined
+        - jp_pip_user_existing | community.general.json_query(jp_pypi_jmespath_query) != []
+        - jp_pip_user_existing | community.general.json_query(jp_pypi_version_jmespath_query) == "57.0.0"
+
+    - name: Install jpterm using pipx as root
+      community.general.pipx:
+        name: jmespath-community-terminal
+        source: "pipx install git+https://github.com/jmespath-community/jmespath.terminal.git@{{ jp_term_community_version }}"
+        install_deps: true
+        state: present
+        executable: /usr/bin/pipx
+      environment:
+        PIPX_HOME: /opt
+        PIPX_BIN_DIR: /usr/local/bin
+      when: ansible_effective_user_id == 0
+
+    - name: Symlink for jpterm present
+      ansible.builtin.file:
+        state: link
+        src: /opt/venvs/jmespath-community-terminal/bin/jpterm
+        dest: /usr/local/bin/jpterm
+        follow: false
+        mode: 0777
+        owner: root
+        group: root
+      when: ansible_effective_user_id == 0
+
+    - name: Install jpterm using pipx as a regular user
+      community.general.pipx:
+        name: jmespath-community-terminal
+        source: "pipx install git+https://github.com/jmespath-community/jmespath.terminal.git@{{ jp_term_community_version }}"
+        install_deps: true
+        state: present
+        executable: /usr/bin/pipx
+      when: ansible_effective_user_id != 0
+
+  when: jp_term | bool
+  tags:
+    - jp
+...

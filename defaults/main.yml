@@ -3,4 +3,6 @@ jp: true
 # https://github.com/jmespath/jp/releases/latest
 jp_binary: jp-linux-amd64
 jp_term: false
+# https://github.com/jmespath-community/jmespath.terminal/tags
+jp_term_community_version: 1.1.1
 ...

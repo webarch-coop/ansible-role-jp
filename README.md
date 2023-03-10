@@ -6,15 +6,19 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 
 ## Defaults
 
-| Variable name        | Default value    | Comment                                                                              |
-|----------------------|------------------|--------------------------------------------------------------------------------------|
-| `jp`                 | `True`           | Tasks in this role are only run when this is `True`                                  |
-| `jp_binary`          | `jp-linux-amd64` | The name of the binary from [GitHub](https://github.com/jmespath/jp/releases/latest) |
-| `jp_term`            | `False`          | Install or remove [JMESPath Terminal](https://pypi.org/project/jmespath-terminal/)   |
+| Variable name               | Default value    | Comment                                                                                               |
+|-----------------------------|------------------|-------------------------------------------------------------------------------------------------------|
+| `jp`                        | `true`           | Tasks in this role are only run when this is `True`                                                   |
+| `jp_binary`                 | `jp-linux-amd64` | The name of the binary from [GitHub](https://github.com/jmespath/jp/releases/latest)                  |
+| `jp_term`                   | `false`          | Install or remove [JMESPath Terminal](https://pypi.org/project/jmespath-terminal/)                    |
+| `jp_term_community_version` | `1.1.1`          | A [jmespath-community-terminal](https://github.com/jmespath-community/jmespath.terminal/tags) tag     |
 
 ## JMESPath Terminal
 
-This role doesn't install `jpterm` by default since it currently [depends on an old version of `setuptools`](https://github.com/jmespath/jmespath.terminal/issues/19#issuecomment-1156039074).
+This role doesn't install `jpterm` by default, when `jp_term` is set to `true`:
+
+* On Debian Bullseye this role will use `pip` to install [an old version of `setuptools`](https://github.com/jmespath/jmespath.terminal/issues/19#issuecomment-1156039074) and [jmespath.terminal](https://github.com/jmespath/jmespath.terminal).
+* On Debian Bookworm this role will use `pipx` to install the fork, [jmespath-community-terminal](https://github.com/jmespath-community/jmespath.terminal).
 
 ## Repository
  

@@ -20,4 +20,8 @@ argument_specs:
         type: bool
         required: false
         description: Install or remove JMESPath Terminal, jpterm
+      jp_term_community_version:
+        type: str
+        required: false
+        description: The jmespath-community-terminal version to install.
 ...
