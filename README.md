@@ -1,4 +1,4 @@
-# Webarchitects jp Ansible role
+# Webarchitects JMESPath Ansible role
 
 [![pipeline status](https://git.coop/webarch/jp/badges/main/pipeline.svg)](https://git.coop/webarch/jp/-/commits/main)
 
@@ -6,12 +6,12 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 
 ## Defaults
 
-| Variable name               | Default value    | Comment                                                                                               |
-|-----------------------------|------------------|-------------------------------------------------------------------------------------------------------|
-| `jp`                        | `true`           | Tasks in this role are only run when this is `True`                                                   |
-| `jp_binary`                 | `jp-linux-amd64` | The name of the binary from [GitHub](https://github.com/jmespath/jp/releases/latest)                  |
-| `jp_term`                   | `false`          | Install or remove [JMESPath Terminal](https://pypi.org/project/jmespath-terminal/)                    |
-| `jp_term_community_version` | `1.1.1`          | A [jmespath-community-terminal](https://github.com/jmespath-community/jmespath.terminal/tags) tag     |
+| Variable name               | Default value    | Comment                                                                                           |
+|-----------------------------|------------------|---------------------------------------------------------------------------------------------------|
+| `jp`                        | `true`           | Run the tasks in this role                                                                        |
+| `jp_binary`                 | `jp-linux-amd64` | The name of the binary from [GitHub](https://github.com/jmespath/jp/releases/latest)              |
+| `jp_term`                   | `false`          | Install or remove [JMESPath Terminal](https://pypi.org/project/jmespath-terminal/)                |
+| `jp_term_community_version` | `1.1.1`          | A [jmespath-community-terminal](https://github.com/jmespath-community/jmespath.terminal/tags) tag |
 
 ## JMESPath Terminal
 
