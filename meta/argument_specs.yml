@@ -56,7 +56,6 @@ argument_specs:
         description: The directory for the jp binary to be installed into as a regular user.
       jp_user_pipx_env:
         type: dict
-        elements: dict
         required: true
         description: The pipx environment for a regular user.
         options:
