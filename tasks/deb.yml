@@ -1,0 +1,50 @@
+# Copyright 2022-2023 Chris Croome
+#
+# This file is part of the Webarchitects JMESPath Ansible role.
+#
+# The Webarchitects Ansible role is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# The Webarchitects Ansible role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
+---
+- name: JMESPath .deb present
+  block:
+
+    - name: Debian packages present when root
+      block:
+
+        - name: Packages present
+          ansible.builtin.apt:
+            pkg: "{{ jp_pkgs }}"
+            update_cache: true
+            state: present
+
+        - name: GitHub binary absent
+          ansible.builtin.file:
+            path: /usr/local/bin/jp
+            state: absent
+
+      when: ansible_effective_user_id == 0
+
+    - name: Check for the Debian packages when not root
+      block:
+
+        - name: Check the presence of the required packages
+          ansible.builtin.assert:
+            that:
+              - jp_deb_pkg in ansible_facts.packages.keys()
+            fail_msg:
+              - "The {{ jp_deb_pkg }} is required"
+              - "You can install all the requirements using:"
+              - "sudo apt install{% for jp_pkg_missing in jp_pkgs %} {{ jp_pkg_missing }}{% endfor %}"
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+          loop: "{{ jp_pkgs }}"
+          loop_control:
+            loop_var: jp_deb_pkg
+
+      when: ansible_effective_user_id != 0
+
+  tags:
+    - jp
+...

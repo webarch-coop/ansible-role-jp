@@ -8,6 +8,10 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
+jp_pkgs:
+  - jp
+  - pipx
+  - python3-pip
 jp_pypi_jmespath_query: "[?name=='{{ jp_pypi_pkg }}']"
 jp_pypi_version_jmespath_query: "[?name=='{{ jp_pypi_pkg }}'].version|[0]"
 ...

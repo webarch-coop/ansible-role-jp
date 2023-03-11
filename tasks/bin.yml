@@ -1,0 +1,172 @@
+# Copyright 2022-2023 Chris Croome
+#
+# This file is part of the Webarchitects JMESPath Ansible role.
+#
+# The Webarchitects Ansible role is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# The Webarchitects Ansible role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
+---
+- name: JMESPath binary present
+  block:
+
+    - name: Check if jp is installed
+      ansible.builtin.command: which jp
+      check_mode: false
+      changed_when: false
+      register: jp_which_jp
+      failed_when: jp_which_jp.rc is not regex('^0|1$')
+
+    - name: Check the insalled version of jp
+      block:
+
+        - name: Check the jp version
+          ansible.builtin.command: jp -v
+          check_mode: false
+          changed_when: false
+          register: jp_version
+
+        - name: Set a fact for the installed version of jp
+          ansible.builtin.set_fact:
+            jp_installed_version: "{{ jp_version.stdout_lines[0].split(' ')[2] }}"
+
+      when: jp_which_jp.rc == 0
+
+    - name: Check the latest version of jp
+      ansible.builtin.uri:
+        url: https://github.com/jmespath/jp/releases/latest
+        method: HEAD
+        status_code: 302
+        follow_redirects: none
+      check_mode: false
+      changed_when: false
+      register: jp_headers
+
+    - name: Debug jp latest headers
+      ansible.builtin.debug:
+        msg:
+          - "Location: {{ jp_headers.location }}"
+          - "Path: {{ jp_headers.location | urlsplit('path') }}"
+          - "Version: {{ jp_headers.location | urlsplit('path') | basename }}"
+        verbosity: 2
+
+    - name: Set a fact for the latest version of jp
+      ansible.builtin.set_fact:
+        jp_version_latest: "{{ jp_headers.location | urlsplit('path') | basename }}"
+
+    - name: Install or upgrade jp
+      block:
+
+        - name: GPG present when root
+          ansible.builtin.apt:
+            pkg:
+              - gpg
+            state: present
+          when: ansible_effective_user_id == 0
+
+        - name: Check the presence GPG when not root
+          ansible.builtin.assert:
+            that:
+              - ( "gpg" in ansible_facts.packages.keys() )
+            fail_msg:
+              - "The gpg package is required"
+              - "You can install it using:"
+              - "sudo apt install gpg"
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+          when: ansible_effective_user_id != 0
+
+        - name: Temporary download directory present
+          ansible.builtin.tempfile:
+            state: directory
+            suffix: jp
+          register: jp_tmpdir
+
+        - name: Check GPG keys
+          ansible.builtin.command: gpg --list-keys
+          check_mode: false
+          changed_when: false
+          register: jp_gpg_list_keys
+
+        - name: Import GPG key
+          block:
+
+            - name: GPG public key present
+              ansible.builtin.copy:
+                src: A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
+                dest: "{{ jp_tmpdir.path }}/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg"
+                mode: "0600"
+                owner: root
+                group: root
+
+            - name: GPG key imported
+              ansible.builtin.command: "gpg --import {{ jp_tmpdir.path }}/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg"
+              register: jp_gpg_import
+              changed_when: ("not changed" not in jp_gpg_import.stderr)
+
+          when: ( "A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6" not in jp_gpg_list_keys.stdout )
+
+        - name: Checksums present
+          ansible.builtin.get_url:
+            url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/jp-checksums.sha256.asc"
+            dest: "{{ jp_tmpdir.path }}/jp-checksums.sha256.asc"
+            mode: "0644"
+
+        - name: Checksums verified
+          ansible.builtin.command: "gpg --verify {{ jp_tmpdir.path }}/jp-checksums.sha256.asc"
+          check_mode: false
+          changed_when: false
+          register: jp_gpg_verify
+
+        - name: Slurp the checksums
+          ansible.builtin.slurp:
+            src: "{{ jp_tmpdir.path }}/jp-checksums.sha256.asc"
+          register: jp_checksums_b64encoded
+
+        - name: Set a fact for the checksum
+          ansible.builtin.set_fact:
+            jp_checksum: "sha256:{{ jp_line.split(' ')[0] }}"
+          when: jp_binary in jp_line
+          loop: "{{ (jp_checksums_b64encoded['content'] | b64decode ).split('\n') }}"
+          loop_control:
+            loop_var: jp_line
+
+        - name: Binary present
+          ansible.builtin.get_url:
+            url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/{{ jp_binary }}"
+            checksum: "{{ jp_checksum }}"
+            dest: "{{ jp_tmpdir.path }}/{{ jp_binary }}"
+            mode: "0755"
+          register: jp_download
+
+        - name: Check that jp runs
+          ansible.builtin.command: "./{{ jp_binary }} -h"
+          args:
+            chdir: "{{ jp_tmpdir.path }}"
+          check_mode: false
+          changed_when: false
+
+        - name: Binary in place for root
+          ansible.builtin.copy:
+            src: "{{ jp_tmpdir.path }}/{{ jp_binary }}"
+            remote_src: true
+            dest: "{{ jp_root_bin }}"
+            mode: "0755"
+          when: ansible_effective_user_id == 0
+
+        - name: Binary in place for user
+          ansible.builtin.copy:
+            src: "{{ jp_tmpdir.path }}/{{ jp_binary }}"
+            remote_src: true
+            dest: "{{ jp_user_bin }}"
+            mode: "0755"
+          when: ansible_effective_user_id != 0
+
+      when: >-
+        ( jp_which_jp.rc == 1 ) or
+        ( jp_installed_version is not defined ) or
+        ( jp_installed_version is version(jp_version_latest, '<') )
+
+  tags:
+    - jp
+...

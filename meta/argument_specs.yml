@@ -15,22 +15,58 @@ argument_specs:
       jp:
         type: bool
         required: true
-        description: Run the tasks in this role
+        description: Run the tasks in this role.
       jp_binary:
         type: str
         required: true
-        description: The jp binary version from GitHub
+        description: The jp binary version from GitHub.
         choices:
           - jp-linux-386
           - jp-linux-amd64
           - jp-linux-arm-arm7
           - jp-linux-arm64
+      jp_root_bin:
+        type: str
+        required: true
+        description: The directory for the jp binary to be installed into as root.
+      jp_root_pipx_env:
+        type: dict
+        elements: dict
+        required: true
+        description: The pipx environment for root.
+        options:
+          PIPX_HOME:
+            type: str
+            required: true
+            description: The directory for the pipx venv for root.
+          PIPX_BIN_DIR:
+            type: str
+            required: true
+            description: The directory for the pipx binary symlink for root.
       jp_term:
         type: bool
         required: false
-        description: Install or remove JMESPath Terminal, jpterm
+        description: Install or remove JMESPath Terminal, jpterm.
       jp_term_community_version:
         type: str
         required: false
         description: The jmespath-community-terminal version to install.
+      jp_user_bin:
+        type: str
+        required: true
+        description: The directory for the jp binary to be installed into as a regular user.
+      jp_user_pipx_env:
+        type: dict
+        elements: dict
+        required: true
+        description: The pipx environment for a regular user.
+        options:
+          PIPX_HOME:
+            type: str
+            required: true
+            description: The directory for the pipx venv for a regular user.
+          PIPX_BIN_DIR:
+            type: str
+            required: true
+            description: The directory for the pipx binary symlink for a regular user.
 ...

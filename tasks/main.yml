@@ -8,161 +8,35 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: Install or upgrade jp
+- name: JMESPath
   block:
 
-    - name: Debian package present when available and role is run as root
+    - name: Read package facts
+      ansible.builtin.package_facts:
+        manager: apt
+
+    - name: Use Debian packages on Debian Bookworm
+      ansible.builtin.include_tasks: deb.yml
+      when: ansible_distribution_release == "bookworm"
+
+    - name: Use GitHub binary when not running Debian Bookworm
+      ansible.builtin.include_tasks: bin.yml
+      when: ansible_distribution_release != "bookworm"
+
+    - name: Install JMESPath Terminal
       block:
 
-        - name: Package present
-          ansible.builtin.apt:
-            pkg:
-              - jp
-            update_cache: true
-            state: present
+        - name: Include JMESPath Terminal Community Edition tasks for Debian Bookworm
+          ansible.builtin.include_tasks: jpterm_community.yml
+          when: ansible_distribution_release == "bookworm"
 
-        - name: GitHub binary absent
-          ansible.builtin.file:
-            path: /usr/local/bin/jp
-            state: absent
+        - name: Include JMESPath Terminal tasks when not running Debian Bookworm
+          ansible.builtin.include_tasks: jpterm.yml
+          when: ansible_distribution_release != "bookworm"
 
-      when:
-        - ansible_effective_user_id == 0
-        - ansible_distribution_release == "bookworm"
-
-    - name: GitHub binary present when not running Debian bookworm and the role is running as root
-      block:
-
-        - name: Check if jp is installed
-          ansible.builtin.command: which jp
-          check_mode: false
-          changed_when: false
-          register: jp_which_jp
-          failed_when: jp_which_jp.rc is not regex('^0|1$')
-
-        - name: Check the insalled version of jp
-          block:
-
-            - name: Check the jp version
-              ansible.builtin.command: jp -v
-              check_mode: false
-              changed_when: false
-              register: jp_version
-
-            - name: Set a fact for the installed version of jp
-              ansible.builtin.set_fact:
-                jp_installed_version: "{{ jp_version.stdout_lines[0].split(' ')[2] }}"
-
-          when: jp_which_jp.rc == 0
-
-        - name: Check the latest version of jp
-          ansible.builtin.uri:
-            url: https://github.com/jmespath/jp/releases/latest
-            method: HEAD
-            status_code: 302
-            follow_redirects: none
-          check_mode: false
-          changed_when: false
-          register: jp_headers
-
-        - name: Debug jp latest headers
-          ansible.builtin.debug:
-            msg:
-              - "Location: {{ jp_headers.location }}"
-              - "Path: {{ jp_headers.location | urlsplit('path') }}"
-              - "Version: {{ jp_headers.location | urlsplit('path') | basename }}"
-            verbosity: 2
-
-        - name: Set a fact for the latest version of jp
-          ansible.builtin.set_fact:
-            jp_version_latest: "{{ jp_headers.location | urlsplit('path') | basename }}"
-
-        - name: Install or upgrade jp
-          block:
-
-            - name: GPG present
-              ansible.builtin.apt:
-                pkg:
-                  - gpg
-                state: present
-
-            - name: GPG public key present
-              ansible.builtin.copy:
-                src: A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
-                dest: /root/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
-                mode: 0600
-                owner: root
-                group: root
-
-            - name: GPG key imported
-              ansible.builtin.command: gpg --import /root/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
-              register: jp_gpg_import
-              changed_when: ("not changed" not in jp_gpg_import.stderr)
-
-            - name: Checksums present
-              ansible.builtin.get_url:
-                url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/jp-checksums.sha256.asc"
-                dest: /root/jp-checksums.sha256.asc
-                mode: 0644
-
-            - name: Checksums verified
-              ansible.builtin.command: gpg --verify /root/jp-checksums.sha256.asc
-              check_mode: false
-              changed_when: false
-              register: jp_gpg_verify
-
-            - name: Slurp the checksums
-              ansible.builtin.slurp:
-                src: /root/jp-checksums.sha256.asc
-              register: jp_checksums_b64encoded
-
-            - name: Set a fact for the checksum
-              ansible.builtin.set_fact:
-                jp_checksum: "sha256:{{ jp_line.split(' ')[0] }}"
-              when: jp_binary in jp_line
-              loop: "{{ (jp_checksums_b64encoded['content'] | b64decode ).split('\n') }}"
-              loop_control:
-                loop_var: jp_line
-
-            - name: Binary present
-              ansible.builtin.get_url:
-                url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/{{ jp_binary }}"
-                checksum: "{{ jp_checksum }}"
-                dest: "/root/{{ jp_binary }}"
-                mode: 0755
-              register: jp_download
-
-            - name: Check that jp runs
-              ansible.builtin.command: "./{{ jp_binary }} -h"
-              args:
-                chdir: /root
-              check_mode: false
-              changed_when: false
-
-            - name: Binary in place
-              ansible.builtin.copy:
-                src: "/root/{{ jp_binary }}"
-                remote_src: true
-                dest: /usr/local/bin/jp
-                mode: 0755
-
-          when: (jp_which_jp.rc == 1) or (jp_installed_version is not defined) or (jp_installed_version is version(jp_version_latest, '<'))
-
-      when:
-        - ansible_effective_user_id == 0
-        - ansible_distribution_release != "bookworm"
-
-    - name: Include JMESPath Terminal tasks for Debian Bullseye
-      ansible.builtin.include_tasks: jpterm.yml
       when:
         - jp_term is defined
-        - ansible_distribution_release == "bullseye"
-
-    - name: Include JMESPath Terminal Community Edition tasks for Debian Bookworm
-      ansible.builtin.include_tasks: jpterm_community.yml
-      when:
-        - jp_term is defined
-        - ansible_distribution_release == "bookworm"
+        - jp_term | bool
 
   when: jp | bool
   tags:

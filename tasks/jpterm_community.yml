@@ -20,9 +20,7 @@
 
     - name: Requirements present when root
       ansible.builtin.apt:
-        pkg:
-          - pipx
-          - python3-pip
+        pkg: "{{ jp_pkgs }}"
         state: present
       when: ansible_effective_user_id == 0
 
@@ -36,13 +34,15 @@
         - name: Check the presence of the required packages
           ansible.builtin.assert:
             that:
-              - ( "pipx" in ansible_facts.packages.keys() )
-              - ( "python3-pip" in ansible_facts.packages.keys() )
+              - jp_pkg in ansible_facts.packages.keys()
             fail_msg:
-              - "The pipx packages is required"
-              - "You can install the requirements using:"
-              - "sudo apt install pipx python3-pip"
+              - "The {{ jp_pkg }} packages is required"
+              - "You can install all the requirements using:"
+              - "sudo apt install{% for jp_pkg_missing in jp_pkgs %} {{ jp_pkg_missing }}{% endfor %}"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+          loop: "{{ jp_pkgs }}"
+          loop_control:
+            loop_var: jp_pkg
 
       when: ansible_effective_user_id != 0
 
@@ -123,22 +123,20 @@
     - name: Install jpterm using pipx as root
       community.general.pipx:
         name: jmespath-community-terminal
-        source: "pipx install git+https://github.com/jmespath-community/jmespath.terminal.git@{{ jp_term_community_version }}"
+        source: "git+https://github.com/jmespath-community/jmespath.terminal.git@{{ jp_term_community_version }}"
         install_deps: true
         state: present
         executable: /usr/bin/pipx
-      environment:
-        PIPX_HOME: /opt
-        PIPX_BIN_DIR: /usr/local/bin
+      environment: "{{ jp_root_pipx_env }}"
       when: ansible_effective_user_id == 0
 
     - name: Symlink for jpterm present
       ansible.builtin.file:
         state: link
         src: /opt/venvs/jmespath-community-terminal/bin/jpterm
-        dest: /usr/local/bin/jpterm
+        dest: "{{ jp_root_pipx_env.PIPX_BIN_DIR }}/jpterm"
         follow: false
-        mode: 0777
+        mode: "0777"
         owner: root
         group: root
       when: ansible_effective_user_id == 0
@@ -146,10 +144,11 @@
     - name: Install jpterm using pipx as a regular user
       community.general.pipx:
         name: jmespath-community-terminal
-        source: "pipx install git+https://github.com/jmespath-community/jmespath.terminal.git@{{ jp_term_community_version }}"
+        source: "git+https://github.com/jmespath-community/jmespath.terminal.git@{{ jp_term_community_version }}"
         install_deps: true
         state: present
         executable: /usr/bin/pipx
+      environment: "{{ jp_user_pipx_env }}"
       when: ansible_effective_user_id != 0
 
   when: jp_term | bool
