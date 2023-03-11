@@ -31,7 +31,6 @@ argument_specs:
         description: The directory for the jp binary to be installed into as root.
       jp_root_pipx_env:
         type: dict
-        elements: dict
         required: true
         description: The pipx environment for root.
         options:
