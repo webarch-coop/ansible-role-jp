@@ -13,13 +13,13 @@ jp: true
 jp_binary: jp-linux-amd64
 jp_root_bin: /usr/local/bin
 jp_root_pipx_env:
-  PIPX_HOME: /opt
+  PIPX_HOME: /opt/pipx
   PIPX_BIN_DIR: "{{ jp_root_bin }}"
 jp_term: false
 # https://github.com/jmespath-community/jmespath.terminal/tags
 jp_term_community_version: 1.1.1
 jp_user_bin: "{{ ansible_env.HOME }}/.local/bin"
 jp_user_pipx_env:
-  PIPX_HOME: "{{ ansible_env.HOME }}/.local"
+  PIPX_HOME: "{{ ansible_env.HOME }}/.local/pipx"
   PIPX_BIN_DIR: "{{ jp_user_bin }}"
 ...

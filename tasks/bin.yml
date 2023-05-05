@@ -150,7 +150,7 @@
           ansible.builtin.copy:
             src: "{{ jp_tmpdir.path }}/{{ jp_binary }}"
             remote_src: true
-            dest: "{{ jp_root_bin }}"
+            dest: "{{ jp_root_bin }}/jp"
             mode: "0755"
           when: ansible_effective_user_id == 0
 
@@ -158,7 +158,7 @@
           ansible.builtin.copy:
             src: "{{ jp_tmpdir.path }}/{{ jp_binary }}"
             remote_src: true
-            dest: "{{ jp_user_bin }}"
+            dest: "{{ jp_user_bin }}/jp"
             mode: "0755"
           when: ansible_effective_user_id != 0
 
