@@ -130,15 +130,25 @@
       environment: "{{ jp_root_pipx_env }}"
       when: ansible_effective_user_id == 0
 
-    - name: Symlink for jpterm present
-      ansible.builtin.file:
-        state: link
-        src: /opt/venvs/jmespath-community-terminal/bin/jpterm
-        dest: "{{ jp_root_pipx_env.PIPX_BIN_DIR }}/jpterm"
-        follow: false
-        mode: "0777"
-        owner: root
-        group: root
+    - name: Symlink jpterm for root
+      block:
+
+        - name: Check that jpterm exists at /opt/venvs/jmespath-community-terminal/bin/jpterm
+          ansible.builtin.stat:
+            path: /opt/venvs/jmespath-community-terminal/bin/jpterm
+          register: jp_root_pipx_path
+
+        - name: Symlink for jpterm present
+          ansible.builtin.file:
+            state: link
+            dest: /opt/venvs/jmespath-community-terminal/bin/jpterm
+            src: "{{ jp_root_pipx_env.PIPX_BIN_DIR }}/jpterm"
+            follow: false
+            mode: "0777"
+            owner: root
+            group: root
+          when: jp_root_pipx_path.stat.exists | bool
+
       when: ansible_effective_user_id == 0
 
     - name: Install jpterm using pipx as a regular user

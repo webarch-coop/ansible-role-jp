@@ -8,6 +8,11 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
+- name: Skip the JMESPath tasks
+  ansible.builtin.debug:
+    msg: "The tasks in the jp role are not being run as the jp variables is not set to true"
+  when: not jp | bool
+
 - name: JMESPath
   block:
 
