@@ -29,6 +29,9 @@ before_script:
   - ansible-lint --version
   - which molecule
   - molecule --version
+  - grep ansible /etc/passwd
+  - grep ansible /etc/group
+  - tail /etc/sudoers
 stages:
   - bookworm
   - bullseye
