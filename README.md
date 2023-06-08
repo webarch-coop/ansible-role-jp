@@ -4,7 +4,7 @@
 
 An Ansible role to install the latest version of [jp](https://github.com/jmespath/jp) from [GitHub](https://github.com/jmespath/jp/releases/latest) when the Debian distro is not Bookworm, [for bookworm the `.deb` package](https://packages.debian.org/bookworm/jp) is installed and the GitHub version is removed.
 
-See the [VARIABLES.md](VARIABLES.md) file for automatically generated documentation for the role variables.
+See the [defaults/main.yml](defaults/main.yml) for the role defaults and [VARIABLES.md](VARIABLES.md) file for automatically generated documentation for all the role variables.
 
 ## JMESPath Terminal
 

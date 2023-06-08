@@ -28,7 +28,7 @@
 
     - name: Check jp_ variables using meta/argument_specs.yml
       ansible.builtin.validate_argument_spec:
-        argument_spec: "{{ (lookup('ansible.builtin.file', 'meta/argument_specs.yml') | from_yaml )['argument_specs']['main']['options'] }}"
+        argument_spec: "{{ (lookup('ansible.builtin.file', 'meta/argument_specs.yml') | from_yaml)['argument_specs']['main']['options'] }}"
         provided_arguments: "{{ jphostvars }}"
 
     - name: Read package facts

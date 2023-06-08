@@ -16,11 +16,24 @@
     - localhost
   tasks:
 
-    - name: Run which jp -a
-      ansible.builtin.command: which jp -a
-      check_mode: false
-      changed_when: false
-      register: molecule_root_which_jp
+    - name: Run which jp -a in a block so it can be rescued
+      block:
+
+        - name: Run which jp -a
+          ansible.builtin.command: which jp -a
+          check_mode: false
+          changed_when: false
+          register: molecule_root_which_jp
+
+      rescue:
+
+        - name: Check mode
+          ansible.builtin.command: "ls -lah {{ molecule_jp_path }}"
+          check_mode: false
+          changed_when: false
+          loop: "{{ molecule_root_which_jp.stdout_lines }}"
+          loop_control:
+            loop_var: molecule_jp_path
 
     - name: Debug which jp -a
       ansible.builtin.debug:
