@@ -12,8 +12,6 @@ variables:
   ANSIBLE_FORCE_COLOR: "1"
   GIT_STRATEGY: none
   MOLECULE_VERBOSITY: "0"
-  PIPX_HOME: /opt
-  PIPX_BIN_DIR: /usr/local/bin
   PY_COLORS: "1"
 before_script:
   - cd
@@ -22,13 +20,12 @@ before_script:
   - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
   - git clone ${CI_PROJECT_URL}.git
   - cd ${CI_PROJECT_NAME}
-  # - which ansible
-  # - ansible --version
-  # - ansible-galaxy collection list
-  # - which ansible-lint
-  # - ansible-lint --version
-  # - which molecule
-  # - molecule --version
+  - which ansible
+  - ansible --version
+  - which yamllint
+  - yamllint --version
+  - which molecule
+  - molecule --version
 stages:
   - bookworm
   - bullseye

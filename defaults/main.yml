@@ -8,7 +8,7 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-jp: true
+jp: false
 # https://github.com/jmespath/jp/releases/latest
 jp_binary: jp-linux-amd64
 jp_root_bin: /usr/local/bin

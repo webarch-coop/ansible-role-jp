@@ -45,9 +45,12 @@
     - localhost
   tasks:
 
-    - name: "Include jp"
+    - name: Include jp role as root
       ansible.builtin.include_role:
         name: jp
+      vars:
+        jp: true
+        jp_term: false
 
 - name: Run as user
   become: false
@@ -57,7 +60,10 @@
     - localhost
   tasks:
 
-    - name: "Include jp"
+    - name: Include jp roles as user
       ansible.builtin.include_role:
         name: jp
+      vars:
+        jp: true
+        jp_term: true
 ...
