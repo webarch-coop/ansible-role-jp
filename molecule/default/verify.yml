@@ -50,6 +50,35 @@
         var: molecule_stat_usr_local_bin_jp_h.stdout_lines
       when: molecule_stat_usr_local_bin_jp_h.stdout is defined
 
+    - name: Check if /usr/local/bin/jpterm is present
+      ansible.builtin.stat:
+        path: /usr/local/bin/jpterm
+      register: molecule_stat_usr_local_bin_jpterm
+
+    - name: Run /usr/local/bin/jpterm -h
+      ansible.builtin.command: /usr/local/bin/jp -h
+      check_mode: false
+      changed_when: false
+      register: molecule_stat_usr_local_bin_jpterm_h
+      when: molecule_stat_usr_local_bin_jp.stat.exists | bool
+
+    - name: Debug the results of /usr/local/bin/jpterm -h
+      ansible.builtin.debug:
+        var: molecule_stat_usr_local_bin_jpterm_h.stdout_lines
+      when: molecule_stat_usr_local_bin_jpterm_h.stdout is defined
+
+    - name: Run /usr/local/bin/jpterm -v
+      ansible.builtin.command: /usr/local/bin/jp -v
+      check_mode: false
+      changed_when: false
+      register: molecule_stat_usr_local_bin_jpterm_v
+      when: molecule_stat_usr_local_bin_jp.stat.exists | bool
+
+    - name: Debug the results of /usr/local/bin/jpterm -v
+      ansible.builtin.debug:
+        var: molecule_stat_usr_local_bin_jpterm_v.stdout_lines
+      when: molecule_stat_usr_local_bin_jpterm_v.stdout is defined
+
 - name: Verify as user
   become: false
   connection: local
@@ -74,5 +103,34 @@
       ansible.builtin.debug:
         var: molecule_stat_home_ansible_local_bin_jp_h.stdout_lines
       when: molecule_stat_home_ansible_local_bin_jp_h.stdout is defined
+
+    - name: Check if /home/ansible/.local/bin/jpterm is present
+      ansible.builtin.stat:
+        path: /home/ansible/.local/bin/jpterm
+      register: molecule_stat_home_ansible_local_bin_jpterm
+
+    - name: Run /home/ansible/.local/bin/jpterm -h
+      ansible.builtin.command: /home/ansible/.local/bin/jp -h
+      check_mode: false
+      changed_when: false
+      register: molecule_stat_home_ansible_local_bin_jpterm_h
+      when: molecule_stat_home_ansible_local_bin_jp.stat.exists | bool
+
+    - name: Debug the results of /home/ansible/.local/bin/jpterm -h
+      ansible.builtin.debug:
+        var: molecule_stat_home_ansible_local_bin_jpterm_h.stdout_lines
+      when: molecule_stat_home_ansible_local_bin_jpterm_h.stdout is defined
+
+    - name: Run /home/ansible/.local/bin/jpterm -v
+      ansible.builtin.command: /home/ansible/.local/bin/jp -v
+      check_mode: false
+      changed_when: false
+      register: molecule_stat_home_ansible_local_bin_jpterm_v
+      when: molecule_stat_home_ansible_local_bin_jp.stat.exists | bool
+
+    - name: Debug the results of /home/ansible/.local/bin/jpterm -v
+      ansible.builtin.debug:
+        var: molecule_stat_home_ansible_local_bin_jpterm_v.stdout_lines
+      when: molecule_stat_home_ansible_local_bin_jpterm_v.stdout is defined
 
 ...
