@@ -27,23 +27,46 @@
 
       rescue:
 
-        - name: Check mode
+        - name: Check mode for jp
           ansible.builtin.command: "ls -lah {{ molecule_jp_path }}"
           check_mode: false
           changed_when: false
+          register: molecule_jp_ls
           loop: "{{ molecule_root_which_jp.stdout_lines }}"
           loop_control:
             loop_var: molecule_jp_path
+
+        - name: Debug mode for jp
+          ansible.builtin.debug:
+            var: molecule_jp_ls
 
     - name: Debug which jp -a
       ansible.builtin.debug:
         var: molecule_root_which_jp.stdout_lines
 
-    - name: Run which jpterm -a
-      ansible.builtin.command: which jpterm -a
-      check_mode: false
-      changed_when: false
-      register: molecule_root_which_jpterm
+    - name: Run which jpterm -a in a block so it can be rescued
+      block:
+
+        - name: Run which jpterm -a
+          ansible.builtin.command: which jpterm -a
+          check_mode: false
+          changed_when: false
+          register: molecule_root_which_jpterm
+
+      rescue:
+
+        - name: Check mode for jpterm
+          ansible.builtin.command: "ls -lah {{ molecule_jpterm_path }}"
+          check_mode: false
+          changed_when: false
+          register: molecule_jpterm_ls
+          loop: "{{ molecule_root_which_jpterm.stdout_lines }}"
+          loop_control:
+            loop_var: molecule_jpterm_path
+
+        - name: Debug mode for jpterm
+          ansible.builtin.debug:
+            var: molecule_jpterm_ls
 
     - name: Debug which jpterm -a
       ansible.builtin.debug:
