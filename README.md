@@ -21,7 +21,7 @@ This role doesn't install `jpterm` by default, when `jp_term` is set to `true`:
 * On Debian Bookworm this role will use `pipx` to install the fork, [jmespath-community-terminal](https://github.com/jmespath-community/jmespath.terminal).
 
 ## Repository
- 
+
 The primary URL of this repo is [`https://git.coop/webarch/jp`](https://git.coop/webarch/jp) however it is also [mirrored to GitHub](https://github.com/webarch-coop/ansible-role-jp) and [available via Ansible Galaxy](https://galaxy.ansible.com/chriscroome/jp).
 
 If you use this role please use a tagged release, see [the release notes](https://git.coop/webarch/jp/-/releases).

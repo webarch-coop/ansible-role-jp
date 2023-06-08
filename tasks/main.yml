@@ -10,7 +10,7 @@
 ---
 - name: Skip the JMESPath tasks
   ansible.builtin.debug:
-    msg: "The tasks in the jp role are not being run as the jp variables is not set to true"
+    msg: "The tasks in the jp role are not being run as the jp variable is not set to true"
   when: not jp | bool
 
 - name: JMESPath
@@ -27,6 +27,11 @@
     - name: Use GitHub binary when not running Debian Bookworm
       ansible.builtin.include_tasks: bin.yml
       when: ansible_distribution_release != "bookworm"
+
+    - name: Skip installing JMESPath Terminal
+      ansible.builtin.debug:
+        msg: "The jpterm tasks in the jp role are not being run as the jp_term variable is not set to true"
+      when: not jp_term | bool
 
     - name: Install JMESPath Terminal
       block:
