@@ -8,35 +8,6 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: Lint
-  become: false
-  connection: local
-  gather_facts: false
-  hosts:
-    - localhost
-  tasks:
-
-    - name: Check Jinja2 syntax
-      ansible.builtin.command: find -type f -name '*.j2' -exec ansiblej2lint.py {} +
-      check_mode: false
-      args:
-        chdir: ../..
-      changed_when: false
-
-    - name: YAML lint
-      ansible.builtin.command: yamllint -f colored -c .yamllint .
-      check_mode: false
-      args:
-        chdir: ../..
-      changed_when: false
-
-    - name: Ansible lint
-      ansible.builtin.command: ansible-lint -c .ansible-lint --force-color .
-      check_mode: false
-      args:
-        chdir: ../..
-      changed_when: false
-
 - name: Run as root
   become: true
   connection: local
@@ -48,7 +19,7 @@
     - name: Include jp role as root
       ansible.builtin.include_role:
         name: jp
-      vars:
+      vars:  # noqa var-naming[no-role-prefix]
         jp: true
         jp_term: false
 
@@ -63,7 +34,7 @@
     - name: Include jp roles as user
       ansible.builtin.include_role:
         name: jp
-      vars:
+      vars:  # noqa var-naming[no-role-prefix]
         jp: true
         jp_term: true
 ...
