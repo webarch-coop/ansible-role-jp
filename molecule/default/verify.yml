@@ -16,11 +16,6 @@
     - localhost
   tasks:
 
-    - name: Initialize role without actually running it
-      ansible.builtin.include_role:
-        name: jp
-        tasks_from: init
-
     - name: Check if /usr/bin/jp is present
       ansible.builtin.stat:
         path: /usr/bin/jp
@@ -62,11 +57,6 @@
   hosts:
     - localhost
   tasks:
-
-    - name: Initialize role without actually running it
-      ansible.builtin.include_role:
-        name: jp
-        tasks_from: init
 
     - name: Check if /home/ansible/.local/bin/jp is present
       ansible.builtin.stat:
