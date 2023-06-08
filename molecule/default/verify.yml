@@ -9,9 +9,11 @@
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
 - name: Verify as root
-  hosts: all
   become: true
+  connection: local
   gather_facts: true
+  hosts:
+    - localhost
   tasks:
 
     - name: Initialize role without actually running it
@@ -54,9 +56,11 @@
       when: molecule_stat_usr_local_bin_jp_h.stdout is defined
 
 - name: Verify as user
-  hosts: all
   become: false
+  connection: local
   gather_facts: true
+  hosts:
+    - localhost
   tasks:
 
     - name: Initialize role without actually running it
