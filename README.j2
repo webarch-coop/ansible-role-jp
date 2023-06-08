@@ -7,7 +7,7 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 ## Requirements
----
+
 | Platform | Versions |
 | -------- | -------- |
 {%- for platform in metadata.galaxy_info.platforms %}
@@ -15,11 +15,11 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 {%- endfor %}
 
 ## Role Arguments
----
+
 {% for entrypoint in argument_specs.keys() %}
 {%- set path, options=entrypoint_options[entrypoint][0] -%}
 ### Entrypoint: {{ entrypoint }}
----
+
 {{ argument_specs[entrypoint].short_description }}
 
 |Option|Description|Type|Required|Default|
@@ -31,7 +31,7 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 {% if entrypoint_options[entrypoint] | length > 1 -%}
 {% for path, options in entrypoint_options[entrypoint][1:] -%}
 #### Options for {{ path | join(" > ") }}
----
+
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
 {%- for name, details in options.items() %}
@@ -43,7 +43,7 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 {% if entrypoint in entrypoint_choices -%}
 {% for path, choices in entrypoint_choices[entrypoint] -%}
 #### Choices for {{ path | join(" > ") }}
----
+
 |Choice|
 |---|
 {%- for item in choices %}
@@ -54,7 +54,7 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 {% endif -%}
 {% endfor %}
 ## Dependencies
----
+
 {%- if ("dependencies" in metadata) and (metadata.dependencies | length > 0) %}
 {%- for dependency in metadata.dependencies %}
 - {{ dependency }}

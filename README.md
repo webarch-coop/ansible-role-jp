@@ -7,16 +7,16 @@ An Ansible role to install the latest version of [jp](https://github.com/jmespat
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 ## Requirements
----
+
 | Platform | Versions |
 | -------- | -------- |
 | Debian | bookworm, bullseye |
 | Ununtu | jammy |
 
 ## Role Arguments
----
+
 ### Entrypoint: main
----
+
 The main entry point for the jp role.
 
 |Option|Description|Type|Required|Default|
@@ -31,21 +31,21 @@ The main entry point for the jp role.
 | jp_user_pipx_env | The pipx environment for a regular user. | dict of 'jp_user_pipx_env' options | yes |  |
 
 #### Options for main > jp_root_pipx_env
----
+
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
 | PIPX_HOME | The directory for the pipx venv for root. | str | yes |  |
 | PIPX_BIN_DIR | The directory for the pipx binary symlink for root. | str | yes |  |
 
 #### Options for main > jp_user_pipx_env
----
+
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
 | PIPX_HOME | The directory for the pipx venv for a regular user. | str | yes |  |
 | PIPX_BIN_DIR | The directory for the pipx binary symlink for a regular user. | str | yes |  |
 
 #### Choices for main > jp_binary
----
+
 |Choice|
 |---|
 | jp-linux-386 |
@@ -55,7 +55,6 @@ The main entry point for the jp role.
 
 
 ## Dependencies
----
 None.
 
 <!-- END_ANSIBLE_DOCS -->
