@@ -34,6 +34,7 @@ The main entry point for the jp role.
 | jp_gpg_list_keys | An internal variable for the results of running gpg --list-keys. | dict | no |  |
 | jp_gpg_verify | An internal variable for the results of running gpg --verify. | dict | no |  |
 | jp_headers | An internal variable for the results of the uri module doing a HEAD request for the https://github.com/jmespath/jp/releases/latest URL. | dict | no |  |
+| jp_installed_version | An internal variable for the installed version of jp. | str | no |  |
 | jp_pip_system_existing | An internal variable for the system PyPI packages present. | list of dicts of 'jp_pip_system_existing' options | no |  |
 | jp_pip_system_list | An internal variable for the registering the result of pip list. | dict | no |  |
 | jp_pip_user_existing | An internal variable for the user PyPI packages present. | list of dicts of 'jp_pip_user_existing' options | no |  |

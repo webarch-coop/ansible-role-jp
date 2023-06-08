@@ -8,10 +8,7 @@ See the [VARIABLES.md](VARIABLES.md) file for automatically generated documentat
 
 ## JMESPath Terminal
 
-This role doesn't install `jpterm` by default, when `jp_term` is set to `true`:
-
-* On Debian Bullseye and Ubuntu Jammy this role will use `pip` to install [an old version of `setuptools`](https://github.com/jmespath/jmespath.terminal/issues/19#issuecomment-1156039074) and [jmespath.terminal](https://github.com/jmespath/jmespath.terminal).
-* On Debian Bookworm this role will use `pipx` to install the fork, [jmespath-community-terminal](https://github.com/jmespath-community/jmespath.terminal).
+This role doesn't install `jpterm` by default, when `jp_term` is set to `true` this role will use `pipx` to install the forked version, [jmespath-community-terminal](https://github.com/jmespath-community/jmespath.terminal) as this version does not require an old version of `setuptools`.
 
 ## Repository
 
