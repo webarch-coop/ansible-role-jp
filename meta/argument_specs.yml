@@ -8,6 +8,8 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
+
+
 argument_specs:
   main:
     short_description: The main entry point for the jp role.
@@ -25,6 +27,34 @@ argument_specs:
           - jp-linux-amd64
           - jp-linux-arm-arm7
           - jp-linux-arm64
+      jp_checksum:
+        type: str
+        required: false
+        description: An internal variable for the checksum for the jp binary.
+      jp_checksums_b64encoded:
+        type: dict
+        required: false
+        description: An internal variable for the results from slurping the GPG signed checksums file.
+      jp_download:
+        type: dict
+        required: false
+        description: An internal variable for the results of using get_url to download the jp binary from GitHub.
+      jp_gpg_import:
+        type: dict
+        required: false
+        description: An internal variable for the results of running gpg --import for the JMESPath GPG public key.
+      jp_gpg_list_keys:
+        type: dict
+        required: false
+        description: An internal variable for the results of running gpg --list-keys.
+      jp_gpg_verify:
+        type: dict
+        required: false
+        description: An internal variable for the results of running gpg --verify.
+      jp_headers:
+        type: dict
+        required: false
+        description: An internal variable for the results of the uri module doing a HEAD request for the https://github.com/jmespath/jp/releases/latest URL.
       jp_pip_system_existing:
         type: list
         elements: dict
@@ -109,6 +139,10 @@ argument_specs:
         required: false
         description: The jmespath-community-terminal version to install.
         default: 1.1.1
+      jp_tmpdir:
+        type: str
+        required: false
+        description: An internal variable for a TMPDIR for downloading files.
       jp_user_bin:
         type: str
         required: true
@@ -126,4 +160,16 @@ argument_specs:
             type: str
             required: true
             description: The directory for the pipx binary symlink for a regular user.
+      jp_version:
+        type: dict
+        required: false
+        description: An internal variable for registering the results of running jp -v.
+      jp_version_latest:
+        type: str
+        required: false
+        description: An internal variable for the latest version of jp.
+      jp_which_jp:
+        type: dict
+        required: false
+        description: An internal variable for registering the results of running which jp.
 ...
