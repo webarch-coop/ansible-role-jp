@@ -16,6 +16,26 @@
     - localhost
   tasks:
 
+    - name: Run which jp -a
+      ansible.builtin.command: which jp -a
+      check_mode: false
+      changed_when: false
+      register: molecule_root_which_jp
+
+    - name: Debug which jp -a
+      ansible.builtin.debug:
+        var: molecule_root_which_jp.stdout_lines
+
+    - name: Run which jpterm -a
+      ansible.builtin.command: which jpterm -a
+      check_mode: false
+      changed_when: false
+      register: molecule_root_which_jpterm
+
+    - name: Debug which jpterm -a
+      ansible.builtin.debug:
+        var: molecule_root_which_jpterm.stdout_lines
+
     - name: Check if /usr/bin/jp is present
       ansible.builtin.stat:
         path: /usr/bin/jp
@@ -86,6 +106,26 @@
   hosts:
     - localhost
   tasks:
+
+    - name: Run which jp -a
+      ansible.builtin.command: which jp -a
+      check_mode: false
+      changed_when: false
+      register: molecule_root_which_jp
+
+    - name: Debug which jp -a
+      ansible.builtin.debug:
+        var: molecule_root_which_jp.stdout_lines
+
+    - name: Run which jpterm -a
+      ansible.builtin.command: which jpterm -a
+      check_mode: false
+      changed_when: false
+      register: molecule_root_which_jpterm
+
+    - name: Debug which jpterm -a
+      ansible.builtin.debug:
+        var: molecule_root_which_jpterm.stdout_lines
 
     - name: Check if /home/ansible/.local/bin/jp is present
       ansible.builtin.stat:
