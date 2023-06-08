@@ -23,7 +23,7 @@ Tags: {{ metadata.galaxy_info.galaxy_tags | join(', ') }}
 
 See [defaults/main.yml](defaults/main.yml).
 
-## Role Arguments
+## Role Variables
 
 {% for entrypoint in argument_specs.keys() %}
 {%- set path, options=entrypoint_options[entrypoint][0] -%}

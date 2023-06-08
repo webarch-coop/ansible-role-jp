@@ -17,7 +17,7 @@ Tags: debian, jp, jmespath, ubuntu
 
 See [defaults/main.yml](defaults/main.yml).
 
-## Role Arguments
+## Role Variables
 
 ### Entrypoint: main
 
