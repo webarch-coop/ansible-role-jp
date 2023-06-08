@@ -17,5 +17,6 @@ jp_pkgs:
   - pipx
   - python3-pip
 jp_pypi_jmespath_query: "[?name=='{{ jp_pypi_pkg }}']"
+jp_pypi_pkg: {}
 jp_pypi_version_jmespath_query: "[?name=='{{ jp_pypi_pkg }}'].version|[0]"
 ...

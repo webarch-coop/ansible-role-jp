@@ -22,27 +22,30 @@ The main entry point for the jp role.
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
 | jp | Run the tasks in this role. | bool | yes | false |
-| jp_binary | The jp binary version from GitHub. | str | yes | jp-linux-amd64 |
-| jp_root_bin | The directory for the jp binary to be installed into as root. | str | yes | /usr/local/bin |
+| jp_binary | The jp binary version from GitHub. | str | yes |  |
+| jp_pkgs | An internal list of required packages. | list of 'str' | yes |  |
+| jp_pypi_jmespath_query | An internal JMESPath query. | str | yes |  |
+| jp_pypi_version_jmespath_query | An internal JMESPath query. | str | yes |  |
+| jp_root_bin | The directory for the jp binary to be installed into as root. | str | yes |  |
 | jp_root_pipx_env | The pipx environment for root. | dict of 'jp_root_pipx_env' options | yes |  |
 | jp_term | Install or remove JMESPath Terminal, jpterm. | bool | no | false |
 | jp_term_community_version | The jmespath-community-terminal version to install. | str | no | 1.1.1 |
-| jp_user_bin | The directory for the jp binary to be installed into as a regular user. | str | yes | ~/.local/bin |
+| jp_user_bin | The directory for the jp binary to be installed into as a regular user. | str | yes |  |
 | jp_user_pipx_env | The pipx environment for a regular user. | dict of 'jp_user_pipx_env' options | yes |  |
 
 #### Options for main > jp_root_pipx_env
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| PIPX_HOME | The directory for the pipx venv for root. | str | yes | /opt/pipx |
-| PIPX_BIN_DIR | The directory for the pipx binary symlink for root. | str | yes | /usr/local/bin |
+| PIPX_HOME | The directory for the pipx venv for root. | str | yes |  |
+| PIPX_BIN_DIR | The directory for the pipx binary symlink for root. | str | yes |  |
 
 #### Options for main > jp_user_pipx_env
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| PIPX_HOME | The directory for the pipx venv for a regular user. | str | yes | ~/.local/pipx |
-| PIPX_BIN_DIR | The directory for the pipx binary symlink for a regular user. | str | yes | ~/.local/bin |
+| PIPX_HOME | The directory for the pipx venv for a regular user. | str | yes |  |
+| PIPX_BIN_DIR | The directory for the pipx binary symlink for a regular user. | str | yes |  |
 
 #### Choices for main > jp_binary
 
@@ -75,5 +78,7 @@ If you use this role please use a tagged release, see [the release notes](https:
 This role can also be used with the [localhost repo](https://git.coop/webarch/localhost) to install `jp` locally.
 
 ## License
+
+Copyright 2019-2023 Chris Croome, &lt;[chris@webarchitects.co.uk](mailto:chris@webarchitects.co.uk)&gt;.
 
 This role is released under [the same terms as Ansible itself](https://github.com/ansible/ansible/blob/devel/COPYING), the [GNU GPLv3](LICENSE).

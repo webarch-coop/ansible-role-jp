@@ -16,7 +16,6 @@ argument_specs:
         type: bool
         required: true
         description: Run the tasks in this role.
-        default: false
       jp_binary:
         type: str
         required: true
@@ -26,12 +25,27 @@ argument_specs:
           - jp-linux-amd64
           - jp-linux-arm-arm7
           - jp-linux-arm64
-        default: jp-linux-amd64
+      jp_pkgs:
+        type: list
+        elements: str
+        required: true
+        description: An internal list of required packages.
+      jp_pypi_jmespath_query:
+        type: str
+        required: true
+        description: An internal JMESPath query.
+      jp_pypi_pkg:
+        type: str
+        required: false
+        description: An internal PyPi packages name.
+      jp_pypi_version_jmespath_query:
+        type: str
+        required: true
+        description: An internal JMESPath query.
       jp_root_bin:
         type: str
         required: true
         description: The directory for the jp binary to be installed into as root.
-        default: /usr/local/bin
       jp_root_pipx_env:
         type: dict
         required: true
@@ -41,12 +55,10 @@ argument_specs:
             type: str
             required: true
             description: The directory for the pipx venv for root.
-            default: /opt/pipx
           PIPX_BIN_DIR:
             type: str
             required: true
             description: The directory for the pipx binary symlink for root.
-            default: /usr/local/bin
       jp_term:
         type: bool
         required: false
@@ -61,7 +73,6 @@ argument_specs:
         type: str
         required: true
         description: The directory for the jp binary to be installed into as a regular user.
-        default: ~/.local/bin
       jp_user_pipx_env:
         type: dict
         required: true
@@ -71,10 +82,8 @@ argument_specs:
             type: str
             required: true
             description: The directory for the pipx venv for a regular user.
-            default: ~/.local/pipx
           PIPX_BIN_DIR:
             type: str
             required: true
             description: The directory for the pipx binary symlink for a regular user.
-            default: ~/.local/bin
 ...
