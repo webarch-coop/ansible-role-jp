@@ -25,7 +25,7 @@
         name: jp
       vars:  # noqa var-naming[no-role-prefix]
         jp: true
-        jp_term: false
+        jp_term: true
 
 - name: Run as user
   become: false

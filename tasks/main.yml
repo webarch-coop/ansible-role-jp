@@ -30,7 +30,7 @@
 
     - name: Skip installing JMESPath Terminal
       ansible.builtin.debug:
-        msg: "The jpterm tasks on {{ ansible_distribution_release }} as the jp_term variable is not set to true"
+        msg: "The jpterm tasks on {{ ansible_distribution_release }} are being skipped as the jp_term variable is not set to true"
       when: not jp_term | bool
 
     - name: Install JMESPath Terminal
