@@ -55,6 +55,10 @@ argument_specs:
         type: dict
         required: false
         description: An internal variable for the results of the uri module doing a HEAD request for the https://github.com/jmespath/jp/releases/latest URL.
+      jp_installed_version:
+        type: str
+        required: false
+        description: An internal variable for the installed version of jp.
       jp_pip_system_existing:
         type: list
         elements: dict
