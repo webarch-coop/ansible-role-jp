@@ -19,6 +19,12 @@ Tags: {{ metadata.galaxy_info.galaxy_tags | join(', ') }}
 | {{ platform.name }} | {{ platform.versions | default([]) | join(', ') }} |
 {%- endfor %}
 
+## Defaults
+
+```yaml
+{% include "defaults/main.yml" | to_nice-yaml %}
+```
+
 ## Role Arguments
 
 {% for entrypoint in argument_specs.keys() %}
@@ -67,21 +73,5 @@ Tags: {{ metadata.galaxy_info.galaxy_tags | join(', ') }}
 {%- else %}
 None.
 {%- endif %}
-
-## Example Playbook
-
-```
-- hosts: all
-  tasks:
-    - name: Importing role: {{ role }}
-      ansible.builtin.import_role:
-        name: {{ role }}
-      vars:
-        {% for name, variable in argument_specs.main.options | items %}
-        {% if variable.required | default(false) %}
-        {{ name }}: # required, type: {{ variable.type }}
-        {% endif -%}
-        {% endfor %}
-```
 
 <!-- END_ANSIBLE_DOCS -->

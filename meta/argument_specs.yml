@@ -25,6 +25,42 @@ argument_specs:
           - jp-linux-amd64
           - jp-linux-arm-arm7
           - jp-linux-arm64
+      jp_pip_system_existing:
+        type: list
+        elements: dict
+        required: false
+        description: An internal variable for the system PyPI packages present.
+        options:
+          name:
+            type: str
+            required: true
+            description: An internal variable for the name of a system PyPI package.
+          version:
+            type: str
+            required: true
+            description: An internal variable for the version of a system PyPI package.
+      jp_pip_system_list:
+        type: dict
+        required: false
+        description: An internal variable for the registering the result of pip list.
+      jp_pip_user_existing:
+        type: list
+        elements: dict
+        required: false
+        description: An internal variable for the user PyPI packages present.
+        options:
+          name:
+            type: str
+            required: true
+            description: An internal variable for the name of a user PyPI package.
+          version:
+            type: str
+            required: true
+            description: An internal variable for the version of a user PyPI package.
+      jp_pip_user_list:
+        type: dict
+        required: false
+        description: An internal variable for the registering the result of pip list --user.
       jp_pkgs:
         type: list
         elements: str
@@ -59,6 +95,10 @@ argument_specs:
             type: str
             required: true
             description: The directory for the pipx binary symlink for root.
+      jp_root_pipx_path:
+        type: dict
+        required: false
+        description: An internal variable for requitering the results of stating the jpterm path.
       jp_term:
         type: bool
         required: false
