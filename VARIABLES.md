@@ -13,6 +13,10 @@ Tags: debian, jp, jmespath, ubuntu
 | Debian | bookworm, bullseye |
 | Ununtu | jammy |
 
+## Defaults
+
+See [defaults/main.yml](defaults/main.yml).
+
 ## Role Arguments
 
 ### Entrypoint: main
@@ -23,16 +27,35 @@ The main entry point for the jp role.
 |---|---|---|---|---|
 | jp | Run the tasks in this role. | bool | yes | false |
 | jp_binary | The jp binary version from GitHub. | str | yes |  |
+| jp_pip_system_existing | An internal variable for the system PyPI packages present. | list of dicts of 'jp_pip_system_existing' options | no |  |
+| jp_pip_system_list | An internal variable for the registering the result of pip list. | dict | no |  |
+| jp_pip_user_existing | An internal variable for the user PyPI packages present. | list of dicts of 'jp_pip_user_existing' options | no |  |
+| jp_pip_user_list | An internal variable for the registering the result of pip list --user. | dict | no |  |
 | jp_pkgs | An internal list of required packages. | list of 'str' | yes |  |
 | jp_pypi_jmespath_query | An internal JMESPath query. | str | yes |  |
 | jp_pypi_pkg | An internal PyPi packages name. | str | no |  |
 | jp_pypi_version_jmespath_query | An internal JMESPath query. | str | yes |  |
 | jp_root_bin | The directory for the jp binary to be installed into as root. | str | yes |  |
 | jp_root_pipx_env | The pipx environment for root. | dict of 'jp_root_pipx_env' options | yes |  |
+| jp_root_pipx_path | An internal variable for requitering the results of stating the jpterm path. | dict | no |  |
 | jp_term | Install or remove JMESPath Terminal, jpterm. | bool | no | false |
 | jp_term_community_version | The jmespath-community-terminal version to install. | str | no | 1.1.1 |
 | jp_user_bin | The directory for the jp binary to be installed into as a regular user. | str | yes |  |
 | jp_user_pipx_env | The pipx environment for a regular user. | dict of 'jp_user_pipx_env' options | yes |  |
+
+#### Options for main > jp_pip_system_existing
+
+|Option|Description|Type|Required|Default|
+|---|---|---|---|---|
+| name | An internal variable for the name of a system PyPI package. | str | yes |  |
+| version | An internal variable for the version of a system PyPI package. | str | yes |  |
+
+#### Options for main > jp_pip_user_existing
+
+|Option|Description|Type|Required|Default|
+|---|---|---|---|---|
+| name | An internal variable for the name of a user PyPI package. | str | yes |  |
+| version | An internal variable for the version of a user PyPI package. | str | yes |  |
 
 #### Options for main > jp_root_pipx_env
 
@@ -60,47 +83,5 @@ The main entry point for the jp role.
 
 ## Dependencies
 None.
-
-## Example Playbook
-
-```
-- hosts: all
-  tasks:
-    - name: Importing role: jp
-      ansible.builtin.import_role:
-        name: jp
-      vars:
-        
-        
-        jp: # required, type: bool
-        
-        
-        jp_binary: # required, type: str
-        
-        
-        jp_pkgs: # required, type: list
-        
-        
-        jp_pypi_jmespath_query: # required, type: str
-        
-        
-        
-        jp_pypi_version_jmespath_query: # required, type: str
-        
-        
-        jp_root_bin: # required, type: str
-        
-        
-        jp_root_pipx_env: # required, type: dict
-        
-        
-        
-        
-        jp_user_bin: # required, type: str
-        
-        
-        jp_user_pipx_env: # required, type: dict
-        
-```
 
 <!-- END_ANSIBLE_DOCS -->
