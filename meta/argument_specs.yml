@@ -16,6 +16,7 @@ argument_specs:
         type: bool
         required: true
         description: Run the tasks in this role.
+        default: false
       jp_binary:
         type: str
         required: true
@@ -25,10 +26,12 @@ argument_specs:
           - jp-linux-amd64
           - jp-linux-arm-arm7
           - jp-linux-arm64
+        default: jp-linux-amd64
       jp_root_bin:
         type: str
         required: true
         description: The directory for the jp binary to be installed into as root.
+        default: /usr/local/bin
       jp_root_pipx_env:
         type: dict
         required: true
@@ -38,22 +41,27 @@ argument_specs:
             type: str
             required: true
             description: The directory for the pipx venv for root.
+            default: /opt/pipx
           PIPX_BIN_DIR:
             type: str
             required: true
             description: The directory for the pipx binary symlink for root.
+            default: /usr/local/bin
       jp_term:
         type: bool
         required: false
         description: Install or remove JMESPath Terminal, jpterm.
+        default: false
       jp_term_community_version:
         type: str
         required: false
         description: The jmespath-community-terminal version to install.
+        default: 1.1.1
       jp_user_bin:
         type: str
         required: true
         description: The directory for the jp binary to be installed into as a regular user.
+        default: ~/.local/bin
       jp_user_pipx_env:
         type: dict
         required: true
@@ -63,8 +71,10 @@ argument_specs:
             type: str
             required: true
             description: The directory for the pipx venv for a regular user.
+            default: ~/.local/pipx
           PIPX_BIN_DIR:
             type: str
             required: true
             description: The directory for the pipx binary symlink for a regular user.
+            default: ~/.local/bin
 ...

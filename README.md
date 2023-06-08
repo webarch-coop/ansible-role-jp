@@ -22,27 +22,27 @@ The main entry point for the jp role.
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
 | jp | Run the tasks in this role. | bool | yes | false |
-| jp_binary | The jp binary version from GitHub. | str | yes |  |
-| jp_root_bin | The directory for the jp binary to be installed into as root. | str | yes |  |
+| jp_binary | The jp binary version from GitHub. | str | yes | jp-linux-amd64 |
+| jp_root_bin | The directory for the jp binary to be installed into as root. | str | yes | /usr/local/bin |
 | jp_root_pipx_env | The pipx environment for root. | dict of 'jp_root_pipx_env' options | yes |  |
 | jp_term | Install or remove JMESPath Terminal, jpterm. | bool | no | false |
-| jp_term_community_version | The jmespath-community-terminal version to install. | str | no |  |
-| jp_user_bin | The directory for the jp binary to be installed into as a regular user. | str | yes |  |
+| jp_term_community_version | The jmespath-community-terminal version to install. | str | no | 1.1.1 |
+| jp_user_bin | The directory for the jp binary to be installed into as a regular user. | str | yes | ~/.local/bin |
 | jp_user_pipx_env | The pipx environment for a regular user. | dict of 'jp_user_pipx_env' options | yes |  |
 
 #### Options for main > jp_root_pipx_env
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| PIPX_HOME | The directory for the pipx venv for root. | str | yes |  |
-| PIPX_BIN_DIR | The directory for the pipx binary symlink for root. | str | yes |  |
+| PIPX_HOME | The directory for the pipx venv for root. | str | yes | /opt/pipx |
+| PIPX_BIN_DIR | The directory for the pipx binary symlink for root. | str | yes | /usr/local/bin |
 
 #### Options for main > jp_user_pipx_env
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| PIPX_HOME | The directory for the pipx venv for a regular user. | str | yes |  |
-| PIPX_BIN_DIR | The directory for the pipx binary symlink for a regular user. | str | yes |  |
+| PIPX_HOME | The directory for the pipx venv for a regular user. | str | yes | ~/.local/pipx |
+| PIPX_BIN_DIR | The directory for the pipx binary symlink for a regular user. | str | yes | ~/.local/bin |
 
 #### Choices for main > jp_binary
 
@@ -63,7 +63,7 @@ None.
 
 This role doesn't install `jpterm` by default, when `jp_term` is set to `true`:
 
-* On Debian Bullseye this role will use `pip` to install [an old version of `setuptools`](https://github.com/jmespath/jmespath.terminal/issues/19#issuecomment-1156039074) and [jmespath.terminal](https://github.com/jmespath/jmespath.terminal).
+* On Debian Bullseye and Ubuntu Jammy this role will use `pip` to install [an old version of `setuptools`](https://github.com/jmespath/jmespath.terminal/issues/19#issuecomment-1156039074) and [jmespath.terminal](https://github.com/jmespath/jmespath.terminal).
 * On Debian Bookworm this role will use `pipx` to install the fork, [jmespath-community-terminal](https://github.com/jmespath-community/jmespath.terminal).
 
 ## Repository
