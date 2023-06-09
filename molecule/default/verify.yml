@@ -33,10 +33,6 @@
       register: molecule_root_which_jp_a
       failed_when: molecule_root_which_jp_a.rc is not regex('^0|1$')
 
-    - name: Debug which jp -a
-      ansible.builtin.debug:
-        var: molecule_root_which_jp_a.stdout_lines
-
     - name: Check jp versions
       ansible.builtin.command: "{{ molecule_jp_path }} --version"
       check_mode: false
@@ -70,10 +66,6 @@
       changed_when: false
       register: molecule_root_which_jpterm_a
       failed_when: molecule_root_which_jpterm_a.rc is not regex('^0|1$')
-
-    - name: Debug which jpterm -a
-      ansible.builtin.debug:
-        var: molecule_root_which_jpterm_a.stdout_lines
 
     - name: Check jpterm versions
       ansible.builtin.command: "{{ molecule_jpterm_path }} --version"
@@ -117,10 +109,6 @@
       register: molecule_user_which_jp_a
       failed_when: molecule_user_which_jp_a.rc is not regex('^0|1$')
 
-    - name: Debug which jp -a
-      ansible.builtin.debug:
-        var: molecule_user_which_jp_a.stdout_lines
-
     - name: Check jp versions
       ansible.builtin.command: "{{ molecule_jp_path }} --version"
       check_mode: false
@@ -154,10 +142,6 @@
       changed_when: false
       register: molecule_user_which_jpterm_a
       failed_when: molecule_user_which_jpterm_a.rc is not regex('^0|1$')
-
-    - name: Debug which jpterm -a
-      ansible.builtin.debug:
-        var: molecule_user_which_jpterm_a.stdout_lines
 
     - name: Check jpterm versions
       ansible.builtin.command: "{{ molecule_jpterm_path }} --version"

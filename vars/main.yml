@@ -11,11 +11,16 @@
 # https://docs.ansible.com/ansible/latest/playbook_guide/complex_data_manipulation.html
 jpvarnames: "{{ q('varnames', '^jp_') | sort }}"
 jphostvars: "{{ dict(jpvarnames | list | zip(q('vars', *jpvarnames))) }}"
-
 jp_pkgs:
   - pipx
   - python3-pip
 jp_pypi_jmespath_query: "[?name=='{{ jp_pypi_pkg }}']"
 jp_pypi_pkg: {}
 jp_pypi_version_jmespath_query: "[?name=='{{ jp_pypi_pkg }}'].version|[0]"
+jp_root_pipx_env:
+  PIPX_HOME: /opt/pipx
+  PIPX_BIN_DIR: "{{ jp_root_bin }}"
+jp_user_pipx_env:
+  PIPX_HOME: "{{ ansible_env.HOME }}/.local/pipx"
+  PIPX_BIN_DIR: "{{ jp_user_bin }}"
 ...
