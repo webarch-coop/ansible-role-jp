@@ -38,7 +38,7 @@
         var: molecule_root_which_jp_a.stdout_lines
 
     - name: Check jp versions
-      ansible.builtin.command: "{{ molecule_jp_path }} -v"
+      ansible.builtin.command: "{{ molecule_jp_path }} --version"
       check_mode: false
       changed_when: false
       register: molecule_jp_v
@@ -76,7 +76,7 @@
         var: molecule_root_which_jpterm_a.stdout_lines
 
     - name: Check jpterm versions
-      ansible.builtin.command: "{{ molecule_jpterm_path }} -v"
+      ansible.builtin.command: "{{ molecule_jpterm_path }} --version"
       check_mode: false
       changed_when: false
       register: molecule_jpterm_v
@@ -122,7 +122,7 @@
         var: molecule_user_which_jp_a.stdout_lines
 
     - name: Check jp versions
-      ansible.builtin.command: "{{ molecule_jp_path }} -v"
+      ansible.builtin.command: "{{ molecule_jp_path }} --version"
       check_mode: false
       changed_when: false
       register: molecule_jp_v
@@ -160,7 +160,7 @@
         var: molecule_user_which_jpterm_a.stdout_lines
 
     - name: Check jpterm versions
-      ansible.builtin.command: "{{ molecule_jpterm_path }} -v"
+      ansible.builtin.command: "{{ molecule_jpterm_path }} --version"
       check_mode: false
       changed_when: false
       register: molecule_jpterm_v
