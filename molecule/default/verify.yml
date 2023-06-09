@@ -46,10 +46,6 @@
       loop_control:
         loop_var: molecule_jp_path
 
-    - name: Debug jp -v
-      ansible.builtin.debug:
-        var: molecule_jp_v
-
     - name: Set facts for the jp versions
       ansible.builtin.set_fact:
         molecule_jp_root_versions: "{{ molecule_jp_v | community.general.json_query('results[].{path: molecule_jp_path, version: stdout_lines[0]}') }}"
@@ -58,97 +54,43 @@
       ansible.builtin.debug:
         var: molecule_jp_root_versions
 
-    - name: Run which jpterm -a in a block so it can be rescued
-      block:
+    - name: Run which jpterm
+      ansible.builtin.command: which jpterm
+      check_mode: false
+      changed_when: false
+      register: molecule_root_which_jpterm
 
-        - name: Run which jpterm -a
-          ansible.builtin.command: which jpterm -a
-          check_mode: false
-          changed_when: false
-          register: molecule_root_which_jpterm
-          failed_when: molecule_root_which_jpterm.rc is not regex('^0|1$')
+    - name: Debug which jpterm
+      ansible.builtin.debug:
+        var: molecule_root_which_jpterm.stdout
 
-      rescue:
-
-        - name: Check mode for jpterm
-          ansible.builtin.command: "ls -lah {{ molecule_jpterm_path }}"
-          check_mode: false
-          changed_when: false
-          register: molecule_jpterm_ls
-          loop: "{{ molecule_root_which_jpterm.stdout_lines }}"
-          loop_control:
-            loop_var: molecule_jpterm_path
-
-        - name: Debug mode for jpterm
-          ansible.builtin.debug:
-            var: molecule_jpterm_ls
+    - name: Run which jpterm -a
+      ansible.builtin.command: which jpterm -a
+      check_mode: false
+      changed_when: false
+      register: molecule_root_which_jpterm_a
+      failed_when: molecule_root_which_jpterm_a.rc is not regex('^0|1$')
 
     - name: Debug which jpterm -a
       ansible.builtin.debug:
-        var: molecule_root_which_jpterm.stdout_lines
+        var: molecule_root_which_jpterm_a.stdout_lines
 
-    - name: Check if /usr/bin/jp is present
-      ansible.builtin.stat:
-        path: /usr/bin/jp
-      register: molecule_stat_usr_bin_jp
-
-    - name: Run /usr/bin/jp -h
-      ansible.builtin.command: /usr/bin/jp -h
+    - name: Check jpterm versions
+      ansible.builtin.command: "{{ molecule_jpterm_path }} -v"
       check_mode: false
       changed_when: false
-      register: molecule_stat_usr_bin_jp_h
-      when: molecule_stat_usr_bin_jp.stat.exists | bool
+      register: molecule_jpterm_v
+      loop: "{{ molecule_root_which_jpterm_a.stdout_lines }}"
+      loop_control:
+        loop_var: molecule_jpterm_path
 
-    - name: Debug the results of /usr/bin/jp -h
+    - name: Set facts for the jpterm versions
+      ansible.builtin.set_fact:
+        molecule_jpterm_root_versions: "{{ molecule_jpterm_v | community.general.json_query('results[].{path: molecule_jpterm_path, version: stdout_lines[0]}') }}"
+
+    - name: Debug jpterm versions
       ansible.builtin.debug:
-        var: molecule_stat_usr_bin_jp_h.stdout_lines
-      when: molecule_stat_usr_bin_jp_h.stdout is defined
-
-    - name: Check if /usr/local/bin/jp is present
-      ansible.builtin.stat:
-        path: /usr/local/bin/jp
-      register: molecule_stat_usr_local_bin_jp
-
-    - name: Run /usr/local/bin/jp -h
-      ansible.builtin.command: /usr/local/bin/jp -h
-      check_mode: false
-      changed_when: false
-      register: molecule_stat_usr_local_bin_jp_h
-      when: molecule_stat_usr_local_bin_jp.stat.exists | bool
-
-    - name: Debug the results of /usr/local/bin/jp -h
-      ansible.builtin.debug:
-        var: molecule_stat_usr_local_bin_jp_h.stdout_lines
-      when: molecule_stat_usr_local_bin_jp_h.stdout is defined
-
-    - name: Check if /usr/local/bin/jpterm is present
-      ansible.builtin.stat:
-        path: /usr/local/bin/jpterm
-      register: molecule_stat_usr_local_bin_jpterm
-
-    - name: Run /usr/local/bin/jpterm -h
-      ansible.builtin.command: /usr/local/bin/jp -h
-      check_mode: false
-      changed_when: false
-      register: molecule_stat_usr_local_bin_jpterm_h
-      when: molecule_stat_usr_local_bin_jp.stat.exists | bool
-
-    - name: Debug the results of /usr/local/bin/jpterm -h
-      ansible.builtin.debug:
-        var: molecule_stat_usr_local_bin_jpterm_h.stdout_lines
-      when: molecule_stat_usr_local_bin_jpterm_h.stdout is defined
-
-    - name: Run /usr/local/bin/jpterm -v
-      ansible.builtin.command: /usr/local/bin/jp -v
-      check_mode: false
-      changed_when: false
-      register: molecule_stat_usr_local_bin_jpterm_v
-      when: molecule_stat_usr_local_bin_jp.stat.exists | bool
-
-    - name: Debug the results of /usr/local/bin/jpterm -v
-      ansible.builtin.debug:
-        var: molecule_stat_usr_local_bin_jpterm_v.stdout_lines
-      when: molecule_stat_usr_local_bin_jpterm_v.stdout is defined
+        var: molecule_jpterm_root_versions
 
 - name: Verify as user
   become: false
@@ -158,70 +100,79 @@
     - localhost
   tasks:
 
+    - name: Run which jp
+      ansible.builtin.command: which jp
+      check_mode: false
+      changed_when: false
+      register: molecule_user_which_jp
+
+    - name: Debug which jp
+      ansible.builtin.debug:
+        var: molecule_user_which_jp.stdout
+
     - name: Run which jp -a
       ansible.builtin.command: which jp -a
       check_mode: false
       changed_when: false
-      register: molecule_root_which_jp
+      register: molecule_user_which_jp_a
+      failed_when: molecule_user_which_jp_a.rc is not regex('^0|1$')
 
     - name: Debug which jp -a
       ansible.builtin.debug:
-        var: molecule_root_which_jp.stdout_lines
+        var: molecule_user_which_jp_a.stdout_lines
+
+    - name: Check jp versions
+      ansible.builtin.command: "{{ molecule_jp_path }} -v"
+      check_mode: false
+      changed_when: false
+      register: molecule_jp_v
+      loop: "{{ molecule_user_which_jp_a.stdout_lines }}"
+      loop_control:
+        loop_var: molecule_jp_path
+
+    - name: Set facts for the jp versions
+      ansible.builtin.set_fact:
+        molecule_jp_user_versions: "{{ molecule_jp_v | community.general.json_query('results[].{path: molecule_jp_path, version: stdout_lines[0]}') }}"
+
+    - name: Debug jp versions
+      ansible.builtin.debug:
+        var: molecule_jp_user_versions
+
+    - name: Run which jpterm
+      ansible.builtin.command: which jpterm
+      check_mode: false
+      changed_when: false
+      register: molecule_user_which_jpterm
+
+    - name: Debug which jpterm
+      ansible.builtin.debug:
+        var: molecule_user_which_jpterm.stdout
 
     - name: Run which jpterm -a
       ansible.builtin.command: which jpterm -a
       check_mode: false
       changed_when: false
-      register: molecule_root_which_jpterm
+      register: molecule_user_which_jpterm_a
+      failed_when: molecule_user_which_jpterm_a.rc is not regex('^0|1$')
 
     - name: Debug which jpterm -a
       ansible.builtin.debug:
-        var: molecule_root_which_jpterm.stdout_lines
+        var: molecule_user_which_jpterm_a.stdout_lines
 
-    - name: Check if /home/ansible/.local/bin/jp is present
-      ansible.builtin.stat:
-        path: /home/ansible/.local/bin/jp
-      register: molecule_stat_home_ansible_local_bin_jp
-
-    - name: Run /home/ansible/.local/bin/jp -h
-      ansible.builtin.command: /home/ansible/.local/bin/jp -h
+    - name: Check jpterm versions
+      ansible.builtin.command: "{{ molecule_jpterm_path }} -v"
       check_mode: false
       changed_when: false
-      register: molecule_stat_home_ansible_local_bin_jp_h
-      when: molecule_stat_home_ansible_local_bin_jp.stat.exists | bool
+      register: molecule_jpterm_v
+      loop: "{{ molecule_user_which_jpterm_a.stdout_lines }}"
+      loop_control:
+        loop_var: molecule_jpterm_path
 
-    - name: Debug the results of /home/ansible/.local/bin/jp -h
+    - name: Set facts for the jpterm versions
+      ansible.builtin.set_fact:
+        molecule_jpterm_user_versions: "{{ molecule_jpterm_v | community.general.json_query('results[].{path: molecule_jpterm_path, version: stdout_lines[0]}') }}"
+
+    - name: Debug jpterm versions
       ansible.builtin.debug:
-        var: molecule_stat_home_ansible_local_bin_jp_h.stdout_lines
-      when: molecule_stat_home_ansible_local_bin_jp_h.stdout is defined
-
-    - name: Check if /home/ansible/.local/bin/jpterm is present
-      ansible.builtin.stat:
-        path: /home/ansible/.local/bin/jpterm
-      register: molecule_stat_home_ansible_local_bin_jpterm
-
-    - name: Run /home/ansible/.local/bin/jpterm -h
-      ansible.builtin.command: /home/ansible/.local/bin/jp -h
-      check_mode: false
-      changed_when: false
-      register: molecule_stat_home_ansible_local_bin_jpterm_h
-      when: molecule_stat_home_ansible_local_bin_jp.stat.exists | bool
-
-    - name: Debug the results of /home/ansible/.local/bin/jpterm -h
-      ansible.builtin.debug:
-        var: molecule_stat_home_ansible_local_bin_jpterm_h.stdout_lines
-      when: molecule_stat_home_ansible_local_bin_jpterm_h.stdout is defined
-
-    - name: Run /home/ansible/.local/bin/jpterm -v
-      ansible.builtin.command: /home/ansible/.local/bin/jp -v
-      check_mode: false
-      changed_when: false
-      register: molecule_stat_home_ansible_local_bin_jpterm_v
-      when: molecule_stat_home_ansible_local_bin_jp.stat.exists | bool
-
-    - name: Debug the results of /home/ansible/.local/bin/jpterm -v
-      ansible.builtin.debug:
-        var: molecule_stat_home_ansible_local_bin_jpterm_v.stdout_lines
-      when: molecule_stat_home_ansible_local_bin_jpterm_v.stdout is defined
-
+        var: molecule_jpterm_user_versions
 ...
