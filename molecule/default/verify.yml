@@ -16,33 +16,39 @@
     - localhost
   tasks:
 
-    - name: Run which jp -a in a block so it can be rescued
-      block:
+    - name: Run which jp
+      ansible.builtin.command: which jp
+      check_mode: false
+      changed_when: false
+      register: molecule_root_which_jp
 
-        - name: Run which jp -a
-          ansible.builtin.command: which jp -a
-          check_mode: false
-          changed_when: false
-          register: molecule_root_which_jp
+    - name: Debug which jp
+      ansible.builtin.debug:
+        var: molecule_root_which_jp.stdout
 
-      rescue:
-
-        - name: Check mode for jp
-          ansible.builtin.command: "ls -lah {{ molecule_jp_path }}"
-          check_mode: false
-          changed_when: false
-          register: molecule_jp_ls
-          loop: "{{ molecule_root_which_jp.stdout_lines }}"
-          loop_control:
-            loop_var: molecule_jp_path
-
-        - name: Debug mode for jp
-          ansible.builtin.debug:
-            var: molecule_jp_ls
+    - name: Run which jp -a
+      ansible.builtin.command: which jp -a
+      check_mode: false
+      changed_when: false
+      register: molecule_root_which_jp_a
+      failed_when: molecule_root_which_jp_a.rc is not regex('^0|1$')
 
     - name: Debug which jp -a
       ansible.builtin.debug:
-        var: molecule_root_which_jp.stdout_lines
+        var: molecule_root_which_jp_a.stdout_lines
+
+    - name: Check jp versions
+      ansible.builtin.command: "{{ molecule_jp_path }} -v"
+      check_mode: false
+      changed_when: false
+      register: molecule_jp_v
+      loop: "{{ molecule_root_which_jp_a.stdout_lines }}"
+      loop_control:
+        loop_var: molecule_jp_path
+
+    - name: Debug jp -v
+      ansible.builtin.debug:
+        var: molecule_jp_v
 
     - name: Run which jpterm -a in a block so it can be rescued
       block:
@@ -52,6 +58,7 @@
           check_mode: false
           changed_when: false
           register: molecule_root_which_jpterm
+          failed_when: molecule_root_which_jpterm.rc is not regex('^0|1$')
 
       rescue:
 
