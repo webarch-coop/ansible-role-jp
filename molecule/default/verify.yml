@@ -52,7 +52,7 @@
 
     - name: Set facts for the jp versions
       ansible.builtin.set_fact:
-        molecule_jp_root_versions: "{{ molecule_jp_v.results | community.general.json_query('results[].{path: molecule_jp_path, version: stdout_lines[0]}') }}"
+        molecule_jp_root_versions: "{{ molecule_jp_v | community.general.json_query('results[].{path: molecule_jp_path, version: stdout_lines[0]}') }}"
 
     - name: Debug jp versions
       ansible.builtin.debug:
