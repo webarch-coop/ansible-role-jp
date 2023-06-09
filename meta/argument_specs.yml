@@ -8,8 +8,6 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-
-
 argument_specs:
   main:
     short_description: The main entry point for the jp role.
