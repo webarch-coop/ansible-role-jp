@@ -22,7 +22,7 @@ galaxy_info:
       versions:
         - bookworm
         - bullseye
-    - name: Ununtu
+    - name: Ubuntu
       versions:
         - jammy
   galaxy_tags:
