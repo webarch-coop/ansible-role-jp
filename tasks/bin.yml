@@ -80,6 +80,8 @@
           ansible.builtin.tempfile:
             state: directory
             suffix: jp
+          check_mode: false
+          changed_when: false
           register: jp_tmpdir
 
         - name: Check GPG keys

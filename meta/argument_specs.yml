@@ -162,6 +162,10 @@ argument_specs:
             type: str
             required: true
             description: The directory for the pipx binary symlink for a regular user.
+      jp_verify:
+        type: bool
+        required: true
+        description: Verify variables that start with jp_ using the argument specification.
       jp_version:
         type: dict
         required: false

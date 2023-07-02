@@ -16,20 +16,9 @@
 - name: JMESPath
   block:
 
-    - name: Debug the hostvars variable names that start with jp_
-      ansible.builtin.debug:
-        var: jpvarnames
-        verbosity: "{% if ansible_check_mode | bool %}3{% else %}4{% endif %}"
-
-    - name: Debug the hostvars variable names that start with jp_
-      ansible.builtin.debug:
-        var: jphostvars
-        verbosity: "{% if ansible_check_mode | bool %}3{% else %}4{% endif %}"
-
-    - name: Check jp_ variables using meta/argument_specs.yml
-      ansible.builtin.validate_argument_spec:
-        argument_spec: "{{ (lookup('ansible.builtin.file', 'meta/argument_specs.yml') | from_yaml)['argument_specs']['main']['options'] }}"
-        provided_arguments: "{{ jphostvars }}"
+    - name: Include JMESPath verify variables tasks
+      ansible.builtin.include_tasks: verify.yml
+      when: jp_verify | bool
 
     - name: Read package facts
       ansible.builtin.package_facts:
