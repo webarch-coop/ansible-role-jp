@@ -118,6 +118,10 @@ argument_specs:
         type: str
         required: true
         description: The directory for the jp binary to be installed into as root.
+      jp_root_download_dir:
+        type: str
+        required: true
+        description: Directory to download files into when running as root.
       jp_root_pipx_env:
         type: dict
         required: true
@@ -153,6 +157,10 @@ argument_specs:
         type: str
         required: true
         description: The directory for the jp binary to be installed into as a regular user.
+      jp_user_download_dir:
+        type: str
+        required: true
+        description: Directory to download files into when running as user.
       jp_user_pipx_env:
         type: dict
         required: true

@@ -46,12 +46,14 @@ The main entry point for the jp role.
 | jp_pypi_pkg | An internal PyPi packages name. | str | no |  |
 | jp_pypi_version_jmespath_query | An internal JMESPath query. | str | yes |  |
 | jp_root_bin | The directory for the jp binary to be installed into as root. | str | yes |  |
+| jp_root_download_dir | Directory to download files into when running as root. | str | yes |  |
 | jp_root_pipx_env | The pipx environment for root. | dict of 'jp_root_pipx_env' options | yes |  |
 | jp_root_pipx_path | An internal variable for requitering the results of stating the jpterm path. | dict | no |  |
 | jp_term | Install or remove JMESPath Terminal, jpterm. | bool | no | false |
 | jp_term_community_version | The jmespath-community-terminal version to install. | str | no | 1.1.1 |
 | jp_tmpdir | An internal variable for a TMPDIR for downloading files. | str | no |  |
 | jp_user_bin | The directory for the jp binary to be installed into as a regular user. | str | yes |  |
+| jp_user_download_dir | Directory to download files into when running as user. | str | yes |  |
 | jp_user_pipx_env | The pipx environment for a regular user. | dict of 'jp_user_pipx_env' options | yes |  |
 | jp_verify | Verify variables that start with jp followed by an underscore using the argument specification. | bool | yes | false |
 | jp_version | An internal variable for registering the results of running jp -v. | dict | no |  |
