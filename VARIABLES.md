@@ -28,6 +28,7 @@ The main entry point for the jp role.
 |---|---|---|---|---|
 | jp | Run the tasks in this role. | bool | yes | false |
 | jp_apt_role | Use the apt role for local_facts. | bool | yes | false |
+| jp_bin | An internal variable for the bin directory to use for the jp binary. | str | yes |  |
 | jp_binary | The jp binary version from GitHub. | str | yes |  |
 | jp_checksum | An internal variable for the checksum for the jp binary. | str | no |  |
 | jp_checksums_b64encoded | An internal variable for the results from slurping the GPG signed checksums file. | dict | no |  |
@@ -51,7 +52,7 @@ The main entry point for the jp role.
 | jp_root_pipx_path | An internal variable for requitering the results of stating the jpterm path. | dict | no |  |
 | jp_term | Install or remove JMESPath Terminal, jpterm. | bool | no | false |
 | jp_term_community_version | The jmespath-community-terminal version to install. | str | no | 1.1.1 |
-| jp_tmpdir | An internal variable for a TMPDIR for downloading files. | str | no |  |
+| jp_tmp | An internal variable for a temp directory for downloading files. | str | no |  |
 | jp_user_bin | The directory for the jp binary to be installed into as a regular user. | str | yes |  |
 | jp_user_download_dir | Directory to download files into when running as user. | str | yes |  |
 | jp_user_pipx_env | The pipx environment for a regular user. | dict of 'jp_user_pipx_env' options | yes |  |
