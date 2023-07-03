@@ -1,8 +1,9 @@
+# Variables
+
 <!-- BEGIN_ANSIBLE_DOCS -->
-# Ansible Role: jp
+For Ansible Role: jp
 
 Ansible role for installing jp, the command line interface to JMESPath on Debian and Ubuntu.
-
 
 Tags: debian, jp, jmespath, ubuntu
 
@@ -11,7 +12,7 @@ Tags: debian, jp, jmespath, ubuntu
 | Platform | Versions |
 | -------- | -------- |
 | Debian | bookworm, bullseye |
-| Ununtu | jammy |
+| Ubuntu | jammy |
 
 ## Defaults
 
@@ -26,6 +27,7 @@ The main entry point for the jp role.
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
 | jp | Run the tasks in this role. | bool | yes | false |
+| jp_apt_role | Use the apt role for local_facts. | bool | yes | false |
 | jp_binary | The jp binary version from GitHub. | str | yes |  |
 | jp_checksum | An internal variable for the checksum for the jp binary. | str | no |  |
 | jp_checksums_b64encoded | An internal variable for the results from slurping the GPG signed checksums file. | dict | no |  |
@@ -33,7 +35,7 @@ The main entry point for the jp role.
 | jp_gpg_import | An internal variable for the results of running gpg --import for the JMESPath GPG public key. | dict | no |  |
 | jp_gpg_list_keys | An internal variable for the results of running gpg --list-keys. | dict | no |  |
 | jp_gpg_verify | An internal variable for the results of running gpg --verify. | dict | no |  |
-| jp_headers | An internal variable for the results of the uri module doing a HEAD request for the https://github.com/jmespath/jp/releases/latest URL. | dict | no |  |
+| jp_headers | An internal variable for the results of the uri module doing a HEAD request for the latest release URL. | dict | no |  |
 | jp_installed_version | An internal variable for the installed version of jp. | str | no |  |
 | jp_pip_system_existing | An internal variable for the system PyPI packages present. | list of dicts of 'jp_pip_system_existing' options | no |  |
 | jp_pip_system_list | An internal variable for the registering the result of pip list. | dict | no |  |
@@ -51,6 +53,7 @@ The main entry point for the jp role.
 | jp_tmpdir | An internal variable for a TMPDIR for downloading files. | str | no |  |
 | jp_user_bin | The directory for the jp binary to be installed into as a regular user. | str | yes |  |
 | jp_user_pipx_env | The pipx environment for a regular user. | dict of 'jp_user_pipx_env' options | yes |  |
+| jp_verify | Verify variables that start with jp followed by an underscore using the argument specification. | bool | yes | false |
 | jp_version | An internal variable for registering the results of running jp -v. | dict | no |  |
 | jp_version_latest | An internal variable for the latest version of jp. | str | no |  |
 | jp_which_jp | An internal variable for registering the results of running which jp. | dict | no |  |
@@ -92,8 +95,8 @@ The main entry point for the jp role.
 | jp-linux-arm-arm7 |
 | jp-linux-arm64 |
 
-
 ## Dependencies
+
 None.
 
 <!-- END_ANSIBLE_DOCS -->

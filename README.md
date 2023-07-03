@@ -4,7 +4,13 @@
 
 An Ansible role to install the latest version of [jp](https://github.com/jmespath/jp) from [GitHub](https://github.com/jmespath/jp/releases/latest) on Debian Bullseye and Ubuntu Jammy, on Debian Bookworm, [the `.deb` package](https://packages.debian.org/bookworm/jp) is installed and the GitHub version is removed.
 
+## Usage
+
 This role can be run as a regular user or as root, when run as a regult user `jp` and `jpterm` will be installed in `~/.local/bin` and when run as `root` in `/usr/local/bin`.
+
+## Role Variables
+
+Set `jp` to `true` for the tasks in this role to be run.
 
 See the [defaults/main.yml](defaults/main.yml) for the role defaults and [VARIABLES.md](VARIABLES.md) file for automatically generated documentation for all the role variables.
 

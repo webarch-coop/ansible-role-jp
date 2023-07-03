@@ -18,34 +18,7 @@
           - jp_term_community_version is ansible.builtin.version('0.1.0', '>=')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
 
-    - name: Requirements present when root
-      ansible.builtin.apt:
-        pkg: "{{ jp_pkgs }}"
-        state: present
-      when: ansible_effective_user_id == 0
-
-    - name: Check requirements when not root
-      block:
-
-        - name: Read package facts
-          ansible.builtin.package_facts:
-            manager: apt
-
-        - name: Check the presence of the required packages
-          ansible.builtin.assert:
-            that:
-              - jp_pkg in ansible_facts.packages.keys()
-            fail_msg:
-              - "The {{ jp_pkg }} packages is required"
-              - "You can install all the requirements using:"
-              - "sudo apt install{% for jp_pkg_missing in jp_pkgs %} {{ jp_pkg_missing }}{% endfor %}"
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ jp_pkgs }}"
-          loop_control:
-            loop_var: jp_pkg
-
-      when: ansible_effective_user_id != 0
-
+    # TODO switch to use community.general.pipx_info module
     - name: Check the system PyPI packages
       ansible.builtin.command: python3 -m pip list --format=json
       check_mode: false
@@ -83,6 +56,7 @@
         - jp_pip_system_existing | community.general.json_query(jp_pypi_jmespath_query) != []
         - jp_pip_system_existing | community.general.json_query(jp_pypi_version_jmespath_query) == "57.0.0"
 
+    # TODO switch to use community.general.pipx_info module
     - name: Check the user PyPI packages
       ansible.builtin.command: python3 -m pip list --user --format=json
       check_mode: false

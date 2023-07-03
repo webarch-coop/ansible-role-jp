@@ -11,10 +11,26 @@
 - name: JMESPath .deb present
   block:
 
-    - name: Use apt role local facts
+    - name: Packages present when root
       block:
 
-        - name: Debian packages present when root
+        - name: Packages present when root
+          ansible.builtin.apt:
+            pkg: "{{ jp_pkgs }}"
+            update_cache: true
+            state: present
+
+        - name: GitHub binary absent when root
+          ansible.builtin.file:
+            path: /usr/local/bin/jp
+            state: absent
+
+      when: ansible_effective_user_id == 0
+
+    - name: Packages checked when not root
+      block:
+
+        - name: Use apt role local facts
           block:
 
             - name: Include apt role local fact tasks
@@ -23,73 +39,44 @@
                 tasks_from: local_facts.yml
               when: ansible_local.dpkg.installed is not defined
 
-            - name: Packages present when root
-              ansible.builtin.apt:
-                pkg: "{{ jp_pkgs }}"
-                update_cache: true
-                state: present
+            - name: Check for the Debian packages when not root
+              ansible.builtin.assert:
+                that:
+                  - jp_deb_pkg in ansible_local.dpkg.installed
+                fail_msg:
+                  - "The {{ jp_deb_pkg }} is required"
+                  - "You can install all the requirements using:"
+                  - "sudo apt install{% for jp_pkg_missing in jp_pkgs %} {{ jp_pkg_missing }}{% endfor %}"
+                quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+              loop: "{{ jp_pkgs }}"
+              loop_control:
+                loop_var: jp_deb_pkg
 
-            - name: GitHub binary absent when root
-              ansible.builtin.file:
-                path: /usr/local/bin/jp
-                state: absent
+          when: jp_apt_role | bool
 
-          when: ansible_effective_user_id == 0
-
-        - name: Check for the Debian packages when not root
-          ansible.builtin.assert:
-            that:
-              - jp_deb_pkg in ansible_local.dpkg.installed
-            fail_msg:
-              - "The {{ jp_deb_pkg }} is required"
-              - "You can install all the requirements using:"
-              - "sudo apt install{% for jp_pkg_missing in jp_pkgs %} {{ jp_pkg_missing }}{% endfor %}"
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ jp_pkgs }}"
-          loop_control:
-            loop_var: jp_deb_pkg
-          when: ansible_effective_user_id != 0
-
-      when: jp_apt_role | bool
-
-    - name: Use Ansible package facts
-      block:
-
-        - name: Read package facts
-          ansible.builtin.package_facts:
-            manager: apt
-
-        - name: Debian packages present when root
+        - name: Use Ansible package facts
           block:
 
-            - name: Packages present when root
-              ansible.builtin.apt:
-                pkg: "{{ jp_pkgs }}"
-                update_cache: true
-                state: present
+            - name: Read package facts
+              ansible.builtin.package_facts:
+                manager: apt
 
-            - name: GitHub binary absent when root
-              ansible.builtin.file:
-                path: /usr/local/bin/jp
-                state: absent
+            - name: Check for the Debian packages when not root
+              ansible.builtin.assert:
+                that:
+                  - jp_deb_pkg in ansible_facts.packages.keys()
+                fail_msg:
+                  - "The {{ jp_deb_pkg }} is required"
+                  - "You can install all the requirements using:"
+                  - "sudo apt install{% for jp_pkg_missing in jp_pkgs %} {{ jp_pkg_missing }}{% endfor %}"
+                quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+              loop: "{{ jp_pkgs }}"
+              loop_control:
+                loop_var: jp_deb_pkg
 
-          when: ansible_effective_user_id == 0
+          when: not jp_apt_role | bool
 
-        - name: Check for the Debian packages when not root
-          ansible.builtin.assert:
-            that:
-              - jp_deb_pkg in ansible_facts.packages.keys()
-            fail_msg:
-              - "The {{ jp_deb_pkg }} is required"
-              - "You can install all the requirements using:"
-              - "sudo apt install{% for jp_pkg_missing in jp_pkgs %} {{ jp_pkg_missing }}{% endfor %}"
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ jp_pkgs }}"
-          loop_control:
-            loop_var: jp_deb_pkg
-          when: ansible_effective_user_id != 0
-
-      when: not jp_apt_role | bool
+      when: ansible_effective_user_id != 0
 
   tags:
     - jp

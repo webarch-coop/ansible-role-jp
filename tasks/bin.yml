@@ -11,6 +11,18 @@
 - name: JMESPath binary present
   block:
 
+    - name: Set facts for paths for root
+      ansible.builtin.set_fact:
+        jp_bin: "{{ jp_root_bin }}"
+        jp_tmp: "{{ jp_root_download_dir }}"
+      when: ansible_effective_user_id == 0
+
+    - name: Set facts for paths for user
+      ansible.builtin.set_fact:
+        jp_bin: "{{ jp_user_bin }}"
+        jp_tmp: "{{ jp_user_download_dir }}"
+      when: ansible_effective_user_id != 0
+
     - name: Check if jp is installed
       ansible.builtin.command: which jp
       check_mode: false
@@ -65,24 +77,50 @@
             state: present
           when: ansible_effective_user_id == 0
 
-        - name: Check the presence GPG when not root
-          ansible.builtin.assert:
-            that:
-              - ( "gpg" in ansible_facts.packages.keys() )
-            fail_msg:
-              - "The gpg package is required"
-              - "You can install it using:"
-              - "sudo apt install gpg"
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          when: ansible_effective_user_id != 0
+        - name: Packages checked when not root
+          block:
 
-        - name: Temporary download directory present
-          ansible.builtin.tempfile:
-            state: directory
-            suffix: jp
-          check_mode: false
-          changed_when: false
-          register: jp_tmpdir
+            - name: Use apt role local facts
+              block:
+
+                - name: Include apt role local fact tasks
+                  ansible.builtin.include_role:
+                    name: apt
+                    tasks_from: local_facts.yml
+                  when: ansible_local.dpkg.installed is not defined
+
+                - name: Check for the Debian packages when not root
+                  ansible.builtin.assert:
+                    that:
+                      - ( "gpg" in ansible_local.dpkg.installed
+                    fail_msg:
+                      - "The gpg package is required"
+                      - "You can install it using:"
+                      - "sudo apt install gpg"
+                    quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+              when: jp_apt_role | bool
+
+            - name: Use Ansible package facts
+              block:
+
+                - name: Read package facts
+                  ansible.builtin.package_facts:
+                    manager: apt
+
+                - name: Check for the Debian packages when not root
+                  ansible.builtin.assert:
+                    that:
+                      - jp_deb_pkg in ansible_facts.packages.keys()
+                    fail_msg:
+                      - "The gpg package is required"
+                      - "You can install it using:"
+                      - "sudo apt install gpg"
+                    quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+              when: not jp_apt_role | bool
+
+          when: ansible_effective_user_id != 0
 
         - name: Check GPG keys
           ansible.builtin.command: gpg --list-keys
@@ -96,13 +134,11 @@
             - name: GPG public key present
               ansible.builtin.copy:
                 src: A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg
-                dest: "{{ jp_tmpdir.path }}/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg"
+                dest: "{{ jp_tmp }}/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg"
                 mode: "0600"
-                owner: root
-                group: root
 
             - name: GPG key imported
-              ansible.builtin.command: "gpg --import {{ jp_tmpdir.path }}/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg"
+              ansible.builtin.command: "gpg --import {{ jp_tmp }}/A0BE6CFACEC3BE69CAD146BBCD2646EDDCC1FDB6.gpg"
               register: jp_gpg_import
               changed_when: ("not changed" not in jp_gpg_import.stderr)
 
@@ -111,18 +147,21 @@
         - name: Checksums present
           ansible.builtin.get_url:
             url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/jp-checksums.sha256.asc"
-            dest: "{{ jp_tmpdir.path }}/jp-checksums.sha256.asc"
+            dest: "{{ jp_tmp }}/jp-checksums.sha256.asc"
             mode: "0644"
+            force: true
+          check_mode: false
+          changed_when: false
 
         - name: Checksums verified
-          ansible.builtin.command: "gpg --verify {{ jp_tmpdir.path }}/jp-checksums.sha256.asc"
+          ansible.builtin.command: "gpg --verify {{ jp_tmp }}/jp-checksums.sha256.asc"
           check_mode: false
           changed_when: false
           register: jp_gpg_verify
 
         - name: Slurp the checksums
           ansible.builtin.slurp:
-            src: "{{ jp_tmpdir.path }}/jp-checksums.sha256.asc"
+            src: "{{ jp_tmp }}/jp-checksums.sha256.asc"
           register: jp_checksums_b64encoded
 
         - name: Set a fact for the checksum
@@ -137,32 +176,26 @@
           ansible.builtin.get_url:
             url: "https://github.com/jmespath/jp/releases/download/{{ jp_version_latest }}/{{ jp_binary }}"
             checksum: "{{ jp_checksum }}"
-            dest: "{{ jp_tmpdir.path }}/{{ jp_binary }}"
+            dest: "{{ jp_tmp }}/{{ jp_binary }}"
             mode: "0755"
+            force: true
+          check_mode: false
+          changed_when: false
           register: jp_download
 
         - name: Check that jp runs
           ansible.builtin.command: "./{{ jp_binary }} -h"
           args:
-            chdir: "{{ jp_tmpdir.path }}"
+            chdir: "{{ jp_tmp }}"
           check_mode: false
           changed_when: false
 
-        - name: Binary in place for root
+        - name: Binary in place
           ansible.builtin.copy:
-            src: "{{ jp_tmpdir.path }}/{{ jp_binary }}"
+            src: "{{ jp_tmp }}/{{ jp_binary }}"
             remote_src: true
-            dest: "{{ jp_root_bin }}/jp"
+            dest: "{{ jp_bin }}/jp"
             mode: "0755"
-          when: ansible_effective_user_id == 0
-
-        - name: Binary in place for user
-          ansible.builtin.copy:
-            src: "{{ jp_tmpdir.path }}/{{ jp_binary }}"
-            remote_src: true
-            dest: "{{ jp_user_bin }}/jp"
-            mode: "0755"
-          when: ansible_effective_user_id != 0
 
       when: >-
         ( jp_which_jp.rc == 1 ) or

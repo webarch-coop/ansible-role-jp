@@ -16,6 +16,10 @@ argument_specs:
         type: bool
         required: true
         description: Run the tasks in this role.
+      jp_apt_role:
+        type: bool
+        required: true
+        description: Use the apt role for local_facts.
       jp_binary:
         type: str
         required: true
@@ -52,7 +56,7 @@ argument_specs:
       jp_headers:
         type: dict
         required: false
-        description: An internal variable for the results of the uri module doing a HEAD request for the https://github.com/jmespath/jp/releases/latest URL.
+        description: An internal variable for the results of the uri module doing a HEAD request for the latest release URL.
       jp_installed_version:
         type: str
         required: false
@@ -165,7 +169,7 @@ argument_specs:
       jp_verify:
         type: bool
         required: true
-        description: Verify variables that start with jp_ using the argument specification.
+        description: Verify variables that start with jp followed by an underscore using the argument specification.
       jp_version:
         type: dict
         required: false

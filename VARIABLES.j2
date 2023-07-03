@@ -1,5 +1,7 @@
+# Variables
+
 <!-- BEGIN_ANSIBLE_DOCS -->
-# Ansible Role: {{ role }}
+For Ansible Role: {{ role }}
 
 {%- if "version" in galaxy_collection %}
 Version: {{ galaxy_collection.version }}
@@ -7,7 +9,7 @@ Version: {{ galaxy_collection.version }}
 
 {{ metadata.galaxy_info.description }}
 
-{% if ("galaxy_tags" in metadata.galaxy_info) and (metadata.galaxy_info.galaxy_tags | length > 0) %}
+{% if ("galaxy_tags" in metadata.galaxy_info) and (metadata.galaxy_info.galaxy_tags | length > 0) -%}
 Tags: {{ metadata.galaxy_info.galaxy_tags | join(', ') }}
 {%- endif %}
 
@@ -61,7 +63,7 @@ See [defaults/main.yml](defaults/main.yml).
 
 {% endfor -%}
 {% endif -%}
-{% endfor %}
+{% endfor -%}
 ## Dependencies
 
 {%- if ("dependencies" in metadata) and (metadata.dependencies | length > 0) %}
@@ -69,6 +71,7 @@ See [defaults/main.yml](defaults/main.yml).
 - {{ dependency }}
 {%- endfor %}
 {%- else %}
+
 None.
 {%- endif %}
 
