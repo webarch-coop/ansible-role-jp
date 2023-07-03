@@ -22,7 +22,7 @@ argument_specs:
         description: Use the apt role for local_facts.
       jp_bin:
         type: str
-        required: true
+        required: false
         description: An internal variable for the bin directory to use for the jp binary.
       jp_binary:
         type: str
