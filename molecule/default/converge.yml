@@ -26,29 +26,4 @@
       vars:  # noqa var-naming[no-role-prefix]
         jp: true
         jp_term: true
-
-- name: Run as user
-  become: false
-  connection: local
-  gather_facts: true
-  hosts:
-    - localhost
-  tasks:
-
-    - name: Debug ansible_effective_user_id
-      ansible.builtin.debug:
-        var: ansible_effective_user_id
-
-    - name: Apt role present
-      community.general.ansible_galaxy_install:
-        type: role
-        dest: /home/ansible/builds/webarch
-        requirements_file: /home/ansible/builds/webarch/jp/meta/requirements.yml
-
-    - name: Include jp roles as user
-      ansible.builtin.include_role:
-        name: jp
-      vars:  # noqa var-naming[no-role-prefix]
-        jp: true
-        jp_term: true
 ...
