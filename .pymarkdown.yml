@@ -8,22 +8,7 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects JMESPath Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: Run as root
-  # become: true
-  connection: local
-  # gather_facts: true
-  hosts:
-    - localhost
-  tasks:
-
-    - name: Debug ansible_effective_user_id
-      ansible.builtin.debug:
-        var: ansible_effective_user_id
-
-    - name: Include jp role as root
-      ansible.builtin.include_role:
-        name: jp
-      vars:  # noqa var-naming[no-role-prefix]
-        jp: true
-        jp_term: true
+plugins:
+  md013:
+    enabled: false
 ...
