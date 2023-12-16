@@ -25,5 +25,6 @@
         name: jp
       vars:  # noqa var-naming[no-role-prefix]
         jp: true
+        jp_apt_role: true
         jp_term: true
 ...

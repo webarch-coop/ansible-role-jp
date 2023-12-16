@@ -2,11 +2,11 @@
 
 [![pipeline status](https://git.coop/webarch/jp/badges/main/pipeline.svg)](https://git.coop/webarch/jp/-/commits/main)
 
-An Ansible role to install the latest version of [jp](https://github.com/jmespath/jp) from [GitHub](https://github.com/jmespath/jp/releases/latest) on Debian Bullseye and Ubuntu Jammy, on Debian Bookworm, [the `.deb` package](https://packages.debian.org/bookworm/jp) is installed and the GitHub version is removed.
+An Ansible role to install the latest version of [jp](https://github.com/jmespath/jp) from [GitHub](https://github.com/jmespath/jp/releases/latest) on Debian Bullseye and Ubuntu Jammy, on Debian Bookworm and Debian Trixie, [the `.deb` package](https://packages.debian.org/bookworm/jp) is installed and the GitHub version is removed.
 
 ## Usage
 
-This role can be run as a regular user or as root, when run as a regult user `jp` and `jpterm` will be installed in `~/.local/bin` and when run as `root` in `/usr/local/bin`.
+This role can be run as a regular user or as root, when run as a regular user `jp` and `jpterm` will be installed in `~/.local/bin` and when run as `root` in `/usr/local/bin`.
 
 ## Role Variables
 
