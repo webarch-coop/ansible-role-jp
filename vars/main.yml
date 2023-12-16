@@ -12,6 +12,7 @@
 jpvarnames: "{{ q('varnames', '^jp_') | sort }}"
 jphostvars: "{{ dict(jpvarnames | list | zip(q('vars', *jpvarnames))) }}"
 jp_pkgs:
+  - jp
   - pipx
   - python3-pip
 jp_pypi_jmespath_query: "[?name=='{{ jp_pypi_pkg }}']"

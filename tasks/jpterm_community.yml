@@ -18,7 +18,7 @@
           - jp_term_community_version is ansible.builtin.version('0.1.0', '>=')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
 
-    # TODO switch to use community.general.pipx_info module
+    # TODO switch to use community.general.pip_package_info module
     - name: Check the system PyPI packages
       ansible.builtin.command: python3 -m pip list --format=json
       check_mode: false
@@ -56,7 +56,7 @@
         - jp_pip_system_existing | community.general.json_query(jp_pypi_jmespath_query) != []
         - jp_pip_system_existing | community.general.json_query(jp_pypi_version_jmespath_query) == "57.0.0"
 
-    # TODO switch to use community.general.pipx_info module
+    # TODO switch to use community.general.pip_package_info module
     - name: Check the user PyPI packages
       ansible.builtin.command: python3 -m pip list --user --format=json
       check_mode: false
