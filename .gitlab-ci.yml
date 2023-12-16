@@ -27,6 +27,7 @@ before_script:
   - yamllint --version
   - which molecule
   - molecule --version
+  - apt-get remove jp -yqqq
 stages:
   - bookworm
   # - bullseye
