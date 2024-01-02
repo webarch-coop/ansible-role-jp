@@ -28,7 +28,7 @@ The main entry point for the jp role.
 |---|---|---|---|---|
 | jp | Run the tasks in this role. | bool | yes | false |
 | jp_apt_role | Use the apt role for local_facts. | bool | yes | false |
-| jp_bin | An internal variable for the bin directory to use for the jp binary. | str | yes |  |
+| jp_bin | An internal variable for the bin directory to use for the jp binary. | str | no |  |
 | jp_binary | The jp binary version from GitHub. | str | yes |  |
 | jp_checksum | An internal variable for the checksum for the jp binary. | str | no |  |
 | jp_checksums_b64encoded | An internal variable for the results from slurping the GPG signed checksums file. | dict | no |  |
