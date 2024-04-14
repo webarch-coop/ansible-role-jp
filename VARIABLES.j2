@@ -1,11 +1,11 @@
-# Variables
+#{# j2lint: disable=jinja-statements-delimiter #} Variables
 
 <!-- BEGIN_ANSIBLE_DOCS -->
 For Ansible Role: {{ role }}
 
 {%- if "version" in galaxy_collection %}
 Version: {{ galaxy_collection.version }}
-{% endif %}
+{%  endif %}
 
 {{ metadata.galaxy_info.description }}
 
@@ -28,48 +28,48 @@ See [defaults/main.yml](defaults/main.yml).
 ## Role Variables
 
 {% for entrypoint in argument_specs.keys() %}
-{%- set path, options=entrypoint_options[entrypoint][0] -%}
+{%-    set path, options=entrypoint_options[entrypoint][0] -%}
 ### Entrypoint: {{ entrypoint }}
 
 {{ argument_specs[entrypoint].short_description }}
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-{%- for name, details in options.items() %}
+{%-    for name, details in options.items() %}
 | {{ name }} | {{ details.display_description }} | {{ details.display_type }} | {{ details.display_required }} | {{ details.display_default }} |
-{%- endfor %}
+{%-    endfor %}
 
-{% if entrypoint_options[entrypoint] | length > 1 -%}
-{% for path, options in entrypoint_options[entrypoint][1:] -%}
+{%     if entrypoint_options[entrypoint] | length > 1 -%}
+{%         for path, options in entrypoint_options[entrypoint][1:] -%}
 #### Options for {{ path | join(" > ") }}
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-{%- for name, details in options.items() %}
+{%-            for name, details in options.items() %}
 | {{ name }} | {{ details.display_description }} | {{ details.display_type }} | {{ details.display_required }} | {{ details.display_default }} |
-{%- endfor %}
+{%-            endfor %}
 
-{% endfor -%}
-{% endif -%}
-{% if entrypoint in entrypoint_choices -%}
-{% for path, choices in entrypoint_choices[entrypoint] -%}
+{%         endfor -%}
+{%     endif -%}
+{%     if entrypoint in entrypoint_choices -%}
+{%         for path, choices in entrypoint_choices[entrypoint] -%}
 #### Choices for {{ path | join(" > ") }}
 
 |Choice|
 |---|
-{%- for item in choices %}
+{%-            for item in choices %}
 | {{ item }} |
-{%- endfor %}
+{%-            endfor %}
 
-{% endfor -%}
-{% endif -%}
+{%         endfor -%}
+{%     endif -%}
 {% endfor -%}
 ## Dependencies
 
 {%- if ("dependencies" in metadata) and (metadata.dependencies | length > 0) %}
-{%- for dependency in metadata.dependencies %}
+{%-     for dependency in metadata.dependencies %}
 - {{ dependency }}
-{%- endfor %}
+{%-     endfor %}
 {%- else %}
 
 None.
