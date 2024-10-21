@@ -15,13 +15,13 @@
       ansible.builtin.set_fact:
         jp_bin: "{{ jp_root_bin }}"
         jp_tmp: "{{ jp_root_download_dir }}"
-      when: ansible_effective_user_id == 0
+      when: ansible_facts.effective_user_id == 0
 
     - name: Set facts for paths for user
       ansible.builtin.set_fact:
         jp_bin: "{{ jp_user_bin }}"
         jp_tmp: "{{ jp_user_download_dir }}"
-      when: ansible_effective_user_id != 0
+      when: ansible_facts.effective_user_id != 0
 
     - name: Check if jp is installed
       ansible.builtin.command: which jp
@@ -75,7 +75,7 @@
             pkg:
               - gpg
             state: present
-          when: ansible_effective_user_id == 0
+          when: ansible_facts.effective_user_id == 0
 
         - name: Packages checked when not root
           block:
@@ -87,12 +87,12 @@
                   ansible.builtin.include_role:
                     name: apt
                     tasks_from: local_facts.yml
-                  when: ansible_local.dpkg.installed is not defined
+                  when: ansible_facts.ansible_local.dpkg.installed is not defined
 
                 - name: Check for the Debian packages when not root
                   ansible.builtin.assert:
                     that:
-                      - ( "gpg" in ansible_local.dpkg.installed
+                      - ( "gpg" in ansible_facts.ansible_local.dpkg.installed
                     fail_msg:
                       - "The gpg package is required"
                       - "You can install it using:"
@@ -120,7 +120,7 @@
 
               when: not jp_apt_role | bool
 
-          when: ansible_effective_user_id != 0
+          when: ansible_facts.effective_user_id != 0
 
         - name: Check GPG keys
           ansible.builtin.command: gpg --list-keys

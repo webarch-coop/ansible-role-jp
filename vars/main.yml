@@ -22,6 +22,6 @@ jp_root_pipx_env:
   PIPX_HOME: /opt/pipx
   PIPX_BIN_DIR: "{{ jp_root_bin }}"
 jp_user_pipx_env:
-  PIPX_HOME: "{{ ansible_env.HOME }}/.local/pipx"
+  PIPX_HOME: "{{ ansible_facts.env.HOME }}/.local/pipx"
   PIPX_BIN_DIR: "{{ jp_user_bin }}"
 ...

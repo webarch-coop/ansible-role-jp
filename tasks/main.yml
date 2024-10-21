@@ -26,11 +26,11 @@
 
     - name: Use Debian packages on Debian Bookworm and Trixie
       ansible.builtin.include_tasks: deb.yml
-      when: ansible_distribution_release is regex('^bookworm|trixie$')
+      when: ansible_facts.distribution_release is regex('^bookworm|trixie$')
 
     - name: Use GitHub binary when not running Debian Bookworm or Trixie
       ansible.builtin.include_tasks: bin.yml
-      when: ansible_distribution_release is not regex('^bookworm|trixie$')
+      when: ansible_facts.distribution_release is not regex('^bookworm|trixie$')
 
     - name: Skip installing JMESPath Terminal
       ansible.builtin.debug:

@@ -102,7 +102,7 @@
         state: present
         executable: /usr/bin/pipx
       environment: "{{ jp_root_pipx_env }}"
-      when: ansible_effective_user_id == 0
+      when: ansible_facts.effective_user_id == 0
 
     - name: Symlink jpterm for root
       block:
@@ -123,7 +123,7 @@
             group: root
           when: jp_root_pipx_path.stat.exists | bool
 
-      when: ansible_effective_user_id == 0
+      when: ansible_facts.effective_user_id == 0
 
     - name: Install jpterm using pipx as a regular user
       community.general.pipx:
@@ -133,7 +133,7 @@
         state: present
         executable: /usr/bin/pipx
       environment: "{{ jp_user_pipx_env }}"
-      when: ansible_effective_user_id != 0
+      when: ansible_facts.effective_user_id != 0
 
   when: jp_term | bool
   tags:

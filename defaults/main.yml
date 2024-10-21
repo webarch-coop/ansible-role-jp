@@ -17,7 +17,7 @@ jp_root_download_dir: /root
 jp_term: false
 # https://github.com/jmespath-community/jmespath.terminal/tags
 jp_term_community_version: 1.1.1
-jp_user_bin: "{{ ansible_env.HOME }}/.local/bin"
-jp_user_download_dir: "{{ ansible_env.HOME }}/tmp }}"
+jp_user_bin: "{{ ansible_facts.env.HOME }}/.local/bin"
+jp_user_download_dir: "{{ ansible_facts.env.HOME }}/tmp }}"
 jp_verify: true
 ...
