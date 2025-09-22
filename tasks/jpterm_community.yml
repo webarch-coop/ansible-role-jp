@@ -11,6 +11,19 @@
 - name: JMESPath Terminal Community Edition
   block:
 
+    - name: Check which -a pipx
+      ansible.builtin.command: which -a pipx
+      check_mode: false
+      changed_when: false
+      register: jp_pipx_which
+
+    - name: Debug jp_pipx_which.stdout_lines
+      ansible.builtin.debug:
+        var: jp_pipx_version.stdout_lines
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
+
     - name: Check the pipx version
       ansible.builtin.command: pipx --version
       check_mode: false
@@ -28,11 +41,11 @@
       tags:
         - debug
 
-    - name: Check that jp_pipx_version and jp_term_community_version is defined
+    - name: Check jp_pipx_version is ge 1.1.0 and jp_term_community_version is ge 0.1.0
       ansible.builtin.assert:
         that:
           - jp_pipx_version is defined
-          - jp_pipx_version is ansible.builtin.version('1.0.0', '>=')
+          - jp_pipx_version is ansible.builtin.version('1.1.0', '>=')
           - jp_term_community_version is defined
           - jp_term_community_version is ansible.builtin.version('0.1.0', '>=')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
