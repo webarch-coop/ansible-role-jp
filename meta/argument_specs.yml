@@ -101,6 +101,10 @@ argument_specs:
         type: dict
         required: false
         description: An internal variable for the registering the result of pip list --user.
+      jp_pipx:
+        type: str
+        required: false
+        description: The path to pipx.
       jp_pkgs:
         type: list
         elements: str

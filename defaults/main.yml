@@ -12,6 +12,7 @@ jp: false
 jp_apt_role: false
 # https://github.com/jmespath/jp/releases/latest
 jp_binary: jp-linux-amd64
+jp_pipx: /usr/bin/pipx
 jp_root_bin: /usr/local/bin
 jp_root_download_dir: /root
 jp_term: false

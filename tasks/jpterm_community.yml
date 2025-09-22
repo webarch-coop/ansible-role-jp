@@ -19,13 +19,17 @@
 
     - name: Debug jp_pipx_which.stdout_lines
       ansible.builtin.debug:
-        var: jp_pipx_version.stdout_lines
+        var: jp_pipx_which.stdout_lines
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
       tags:
         - debug
 
+    - name: Set a fact for the pipx path
+      ansible.builtin.set_fact:
+        jp_pipx: "{{ jp_pipx_which.stdout_lines[0] }}"
+
     - name: Check the pipx version
-      ansible.builtin.command: pipx --version
+      ansible.builtin.command: "{{ jp_pipx }} --version"
       check_mode: false
       changed_when: false
       register: jp_pipx_executable_check
@@ -132,7 +136,7 @@
         source: "git+https://github.com/jmespath-community/jmespath.terminal.git@{{ jp_term_community_version }}"
         install_deps: true
         state: present
-        executable: /usr/bin/pipx
+        executable: "{{ jp_pipx }}"
       environment: "{{ jp_root_pipx_env }}"
       when: ansible_facts.effective_user_id == 0
 
@@ -163,7 +167,7 @@
         source: "git+https://github.com/jmespath-community/jmespath.terminal.git@{{ jp_term_community_version }}"
         install_deps: true
         state: present
-        executable: /usr/bin/pipx
+        executable: "{{ jp_pipx }}"
       environment: "{{ jp_user_pipx_env }}"
       when: ansible_facts.effective_user_id != 0
 
