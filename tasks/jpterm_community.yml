@@ -19,18 +19,20 @@
 
     - name: Set a fact for the pipx version
       ansible.builtin.set_fact:
-        jp_pipx_version: "{{ ans_pipx_executable_check.stdout | trim | string }}"
+        jp_pipx_version: "{{ jp_pipx_executable_check.stdout | trim | string }}"
 
-    - name: Pipx version
+    - name: Debug jp_pipx_version
       ansible.builtin.debug:
         var: jp_pipx_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
       tags:
         - debug
 
-    - name: Check that jp_term_community_version is defined
+    - name: Check that jp_pipx_version and jp_term_community_version is defined
       ansible.builtin.assert:
         that:
+          - jp_pipx_version is defined
+          - jp_pipx_version is ansible.builtin.version('1.0.0', '>=')
           - jp_term_community_version is defined
           - jp_term_community_version is ansible.builtin.version('0.1.0', '>=')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
