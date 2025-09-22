@@ -11,6 +11,23 @@
 - name: JMESPath Terminal Community Edition
   block:
 
+    - name: Check the pipx version
+      ansible.builtin.command: pipx --version
+      check_mode: false
+      changed_when: false
+      register: jp_pipx_executable_check
+
+    - name: Set a fact for the pipx version
+      ansible.builtin.set_fact:
+        jp_pipx_version: "{{ ans_pipx_executable_check.stdout | trim | string }}"
+
+    - name: Pipx version
+      ansible.builtin.debug:
+        var: jp_pipx_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
+
     - name: Check that jp_term_community_version is defined
       ansible.builtin.assert:
         that:
